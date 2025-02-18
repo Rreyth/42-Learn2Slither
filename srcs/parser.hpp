@@ -13,7 +13,7 @@ struct flags
 	bool		stepmode = false;
 	std::string	savefile = "";
 	std::string	loadfile = "";
-	int			size  = 0;
+	int			size  = 10;
 	int			sessions = 0;
 };
 

@@ -6,7 +6,7 @@ MAKEFLAGS			:= --no-print-directory
 
 #=================================COMPILATION==================================#
 CC					:= g++
-CPPFLAGS			:= -std=c++20 -MP -MMD -I SFML-3/include -I srcs
+CPPFLAGS			:= -g -std=c++20 -MP -MMD -I SFML-3/include -I srcs
 LIBFSMLFLAG			:= -L SFML-3/lib -lsfml-graphics -lsfml-window -lsfml-system -Wl,-rpath,\$$ORIGIN/SFML-3/lib
 
 #=====================================NAME=====================================#
@@ -17,7 +17,9 @@ BUILD				:= build
 
 #====================================TARGETS===================================#
 SRCS				:=	srcs/main.cpp \
-						srcs/parser.cpp
+						srcs/parser.cpp \
+						srcs/Environment/Environment.cpp \
+						srcs/Environment/Grid.cpp
 
 OBJS 				:= ${SRCS:srcs/%.cpp=$(BUILD)/%.o}
 DEPS				:= $(SRCS:srcs/%.cpp=$(BUILD)/%.d)

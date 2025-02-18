@@ -81,6 +81,8 @@ flags parse_flags(int argc, char **argv)
 				parsed_flags.invalid = true;
 				std::cerr << "Try './snake --help' for more information." << std::endl;
 				break;
+			default:
+				parsed_flags.invalid = true;
 		}
 	}
 
