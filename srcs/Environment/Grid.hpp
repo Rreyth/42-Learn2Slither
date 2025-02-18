@@ -35,8 +35,10 @@ class Grid
 		Grid(const int &size);
 		~Grid();
 
-		// move
-		// TODO: get agent view
+		void		movePlayer(const player_dir &dir);
+		std::string	getAgentView() const;
+		s_player&	getPlayer();
+
 	private:
 		std::vector<apple>	apples;
 		s_player			player;

@@ -192,7 +192,8 @@ void Grid::initGrid()
 	}
 
 	//TODO RM
-	std::cout << this->player.head_pos.x << ", " << this->player.head_pos.y << std::endl;
+	std::cout << "player pos : " << this->player.head_pos.x << ", " << this->player.head_pos.y << std::endl;
+	std::cout << "game map:" << std::endl;
 	for (int i = 0; i <= this->grid.length(); i++)
 	{
 		if (i % this->size == 0)
@@ -200,4 +201,41 @@ void Grid::initGrid()
 		std::cout << this->grid[i];
 	}
 	std::cout << std::endl;
+}
+
+
+void	Grid::movePlayer(const player_dir &dir) // TODO
+{
+	// move to inv of old dir not possible
+	// move head and body parts
+	// if move in wall or in body part -> dead
+}
+
+
+std::string	Grid::getAgentView() const
+{
+	std::string	agent_view = "";
+
+	int			y = this->player.head_pos.x;
+	while (y <= this->grid.length())
+	{
+		agent_view += this->grid[y];
+		y += this->size;
+	}
+
+	int	x = 0;
+	y = this->player.head_pos.y;
+	while (x < this->size)
+	{
+		agent_view += this->grid[(y * this->size) + x];
+		x++;
+	}
+
+	return agent_view;
+}
+
+
+s_player&	Grid::getPlayer()
+{
+	return (this->player);
 }
