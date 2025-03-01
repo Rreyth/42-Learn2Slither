@@ -204,15 +204,37 @@ void Grid::initGrid()
 }
 
 
-void	Grid::movePlayer(const player_dir &dir) // TODO
+void	Grid::movePlayer(const player_dir &dir)
 {
-	// move to inv of old dir not possible
-	// move head and body parts
-	// if move in wall or in body part -> dead
+	// move head
+	sf::Vector2i old_pos, tmp;
+	old_pos = this->player.head_pos;
+	switch (dir)
+	{
+		case UP:
+			this->player.head_pos.y--;
+			break;
+		case DOWN:
+			this->player.head_pos.y++;
+			break;
+		case LEFT:
+			this->player.head_pos.x--;
+			break;
+		case RIGHT:
+			this->player.head_pos.x++;
+	}
+
+	// move body parts
+	for (sf::Vector2i &body : this->player.body_pos)
+	{
+		tmp = body;
+		body = old_pos;
+		old_pos = tmp;
+	}
 }
 
 
-std::string	Grid::getAgentView() const
+std::string	Grid::getAgentView() const //TODO: redo with state struct - rm string vers of map
 {
 	std::string	agent_view = "";
 

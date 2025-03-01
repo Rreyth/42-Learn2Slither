@@ -34,14 +34,21 @@ Environment::~Environment()
 
 void Environment::run()
 {
+	float delta, fps;
 	while (this->running)
 	{
 		this->input();
 		if (!this->running)
 			break;
-		this->tick();
+		delta = clock.restart().asSeconds();
+		if (this->visual)
+		{
+			fps = 1.0f / delta;
+			std::string title("I'M A SNAKE! | " + std::to_string(static_cast<int>(fps)));
+			this->visual->getWin().setTitle(title);
+		}
+		this->tick(delta);
 		this->render();
-		//clock tick / sleep
 	}
 }
 
@@ -54,17 +61,33 @@ void Environment::input()
 	while (const std::optional event = win.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>())
+			this->close();
+		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 		{
-			win.close();
-			this->running = false;
+			if (keyPressed->code == sf::Keyboard::Key::Escape)
+				this->close();
+			else if (keyPressed->code == sf::Keyboard::Key::Up)
+				this->grid.movePlayer(UP);
+			else if (keyPressed->code == sf::Keyboard::Key::Down)
+				this->grid.movePlayer(DOWN);
+			else if (keyPressed->code == sf::Keyboard::Key::Left)
+				this->grid.movePlayer(LEFT);
+			else if (keyPressed->code == sf::Keyboard::Key::Right)
+				this->grid.movePlayer(RIGHT);
 		}
 	}
 }
 
 
-void Environment::tick()
+void Environment::tick(float delta)
 {
-
+	// TODO : if move in wall or in body part -> dead
+	// check head pos
+	// if head on body or wall -> dead (- 100)
+	// elif head on bonus -> + 30 -> move apple
+	// elif head on malus -> - 30 -> move apple
+	// elif closer to bonus -> + 1
+	// else -> - 1
 }
 
 
@@ -78,6 +101,15 @@ void Environment::render()
 
 }
 
+
+void Environment::close()
+{
+	if (this->visual)
+	{
+		this->visual->getWin().close();
+	}
+	this->running = false;
+}
 
 // # print if no visual
 // # load msg

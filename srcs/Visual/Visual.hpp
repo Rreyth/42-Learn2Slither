@@ -5,12 +5,13 @@
 # include "../Environment/Grid.hpp"
 
 # define TILE_SIZE 32
+# define MAX_FPS 1000
 
 
 class Visual
 {
 	public:
-		Visual(const int &grid_size);
+		Visual(const int &tiles);
 		~Visual();
 
 		sf::RenderWindow	&getWin();
@@ -18,7 +19,8 @@ class Visual
 
 	private:
 		sf::RenderWindow	window;
-		int					grid_visual_size;
+		sf::Vector2i		grid_pos;
+		int					tiles_nb;
 
 		void				drawGrid();
 		void				drawElements(s_player &player, std::vector<s_apple> &apples);

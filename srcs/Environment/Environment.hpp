@@ -13,14 +13,16 @@ class Environment
 
 	private:
 		// agent class
-		Visual	*visual = nullptr;
-		flags	env_flags;
-		Grid	grid;
-		bool	running;
+		sf::Clock	clock;
+		Visual		*visual = nullptr;
+		flags		env_flags;
+		Grid		grid;
+		bool		running;
 
 		void	input();
-		void	tick();
+		void	tick(float delta);
 		void	render();
+		void	close();
 
 		// TODO: to_state State struct
 };
