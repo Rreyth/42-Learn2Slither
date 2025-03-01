@@ -246,6 +246,7 @@ void	Grid::movePlayer(const player_dir &dir)
 		body = old_pos;
 		old_pos = tmp;
 	}
+	this->next_body_pos = old_pos;
 }
 
 
@@ -346,6 +347,24 @@ bool	Grid::moveInBonusDir(const sf::Vector2i &pos, player_dir dir)
 bool	Grid::isCloserMove() const
 {
 	return (this->closer);
+}
+
+
+void	Grid::playerGrow()
+{
+	this->player.body_pos.push_back(this->next_body_pos);
+}
+
+
+void	Grid::playerShrink()
+{
+	this->player.body_pos.pop_back();
+}
+
+
+int Grid::getPlayerLen() const
+{
+	return this->player.body_pos.size();
 }
 
 

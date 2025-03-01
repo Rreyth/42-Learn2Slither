@@ -46,12 +46,16 @@ class Grid
 		bool					wallHit(const sf::Vector2i &pos);
 		void					moveApple(s_apple &apple);
 		bool					isCloserMove() const;
+		void					playerGrow();
+		void					playerShrink();
+		int						getPlayerLen() const;
 		void					reset();
 
 	private:
 		std::vector<s_apple>	apples;
 		s_player				player;
 		std::string				grid;
+		sf::Vector2i			next_body_pos;
 		bool					closer;
 		int						size;
 

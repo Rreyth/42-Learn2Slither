@@ -127,16 +127,28 @@ int Environment::checkMove()
 	{
 		// TODO: death -> if AI -> next session
 		reward = -100;
+		this->reset();
 	}
 	else if (this->grid.occupiedByApples(pos))
 	{
 		s_apple& apple = this->grid.getAppleByPos(pos);
 		if (apple.bonus)
+		{
 			reward = 30;
+			this->grid.playerGrow();
+		}
 		else
-			reward = -30;
+		{
+			this->grid.playerShrink();
+			if (this->grid.getPlayerLen() == 0)
+			{
+				reward = -100; // TODO: death
+				this->reset();
+			}
+			else
+				reward = -30;
+		}
 		this->grid.moveApple(apple);
-		//TODO: update snake size -> if body parts = 0 ? if total len = 0 ? -> death
 	}
 	else if (this->grid.isCloserMove())
 		reward = 1;
