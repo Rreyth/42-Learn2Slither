@@ -5,7 +5,7 @@
 #include <SFML/System.hpp>
 
 
-struct apple
+struct s_apple
 {
 	bool			bonus;
 	sf::Vector2i	pos;
@@ -35,12 +35,14 @@ class Grid
 		Grid(const int &size);
 		~Grid();
 
-		void		movePlayer(const player_dir &dir);
-		std::string	getAgentView() const;
-		s_player&	getPlayer();
+		void					movePlayer(const player_dir &dir);
+		std::string				getAgentView() const;
+		s_player&				getPlayer();
+		std::vector<s_apple>&	getApples();
+		std::string&			getGrid();
 
 	private:
-		std::vector<apple>	apples;
+		std::vector<s_apple>	apples;
 		s_player			player;
 		std::string			grid;
 		int					size;

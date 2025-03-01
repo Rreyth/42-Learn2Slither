@@ -8,6 +8,8 @@ int main(int argc, char **argv)
 
 	if (launch_flags.invalid)
 		return (EXIT_FAILURE);
+	if (launch_flags.help)
+		return (EXIT_SUCCESS);
 
 	Environment env(launch_flags);
 	env.run();

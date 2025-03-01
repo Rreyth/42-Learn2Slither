@@ -2,6 +2,7 @@
 # define ENVIRONMENT_HPP
 # include "../parser.hpp"
 # include "Grid.hpp"
+# include "../Visual/Visual.hpp"
 
 class Environment
 {
@@ -11,13 +12,17 @@ class Environment
 		void	run();
 
 	private:
-		//visual class
-		//agent class
-		flags		env_flags;
-		Grid		grid;
+		// agent class
+		Visual	*visual = nullptr;
+		flags	env_flags;
+		Grid	grid;
+		bool	running;
 
-		//methods
-		//TODO: to_state State struct
+		void	input();
+		void	tick();
+		void	render();
+
+		// TODO: to_state State struct
 };
 
 #endif //ENVIRONMENT_HPP

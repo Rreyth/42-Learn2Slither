@@ -1,8 +1,7 @@
 #include "Grid.hpp"
 
-#include <iostream>
 #include <random>
-
+#include <iostream>
 
 Grid::Grid(const int &size)
 {
@@ -104,7 +103,7 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 
 void	Grid::initApples()
 {
-	apple	bonus1{true},
+	s_apple	bonus1{true},
 			bonus2{true},
 			malus{false};
 
@@ -143,7 +142,7 @@ void	Grid::initApples()
 
 bool	Grid::occupiedByApples(const sf::Vector2i &pos)
 {
-	for (const apple &apple : this->apples)
+	for (const s_apple &apple : this->apples)
 	{
 		if (pos == apple.pos)
 			return true;
@@ -175,7 +174,7 @@ void Grid::initGrid()
 			}
 			else if (this->occupiedByApples(test_pos))
 			{
-				for (const apple &apple : this->apples)
+				for (const s_apple &apple : this->apples)
 				{
 					if (test_pos == apple.pos)
 					{
@@ -192,6 +191,7 @@ void Grid::initGrid()
 	}
 
 	//TODO RM
+
 	std::cout << "player pos : " << this->player.head_pos.x << ", " << this->player.head_pos.y << std::endl;
 	std::cout << "game map:" << std::endl;
 	for (int i = 0; i <= this->grid.length(); i++)
@@ -231,11 +231,23 @@ std::string	Grid::getAgentView() const
 		x++;
 	}
 
-	return agent_view;
+	return (agent_view);
 }
 
 
 s_player&	Grid::getPlayer()
 {
 	return (this->player);
+}
+
+
+std::vector<s_apple>&	Grid::getApples()
+{
+	return (this->apples);
+}
+
+
+std::string	&Grid::getGrid()
+{
+	return (this->grid);
 }

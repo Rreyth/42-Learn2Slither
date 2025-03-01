@@ -19,7 +19,8 @@ BUILD				:= build
 SRCS				:=	srcs/main.cpp \
 						srcs/parser.cpp \
 						srcs/Environment/Environment.cpp \
-						srcs/Environment/Grid.cpp
+						srcs/Environment/Grid.cpp \
+						srcs/Visual/Visual.cpp
 
 OBJS 				:= ${SRCS:srcs/%.cpp=$(BUILD)/%.o}
 DEPS				:= $(SRCS:srcs/%.cpp=$(BUILD)/%.d)
@@ -78,7 +79,7 @@ fclean : clean
 	@rm -f $(NAME)
 
 re :
-	@clear
+	@clear -x
 	@make fclean
 	@make
 

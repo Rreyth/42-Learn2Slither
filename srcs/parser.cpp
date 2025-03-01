@@ -41,6 +41,7 @@ flags parse_flags(int argc, char **argv)
 		{
 			case 'h':
 				std::cout << help << std::endl;
+				parsed_flags.help = true;
 				break;
 			case 'v':
 				parsed_flags.visual = true;
