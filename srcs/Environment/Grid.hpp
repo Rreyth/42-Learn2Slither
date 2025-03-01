@@ -38,20 +38,28 @@ class Grid
 		void					movePlayer(const player_dir &dir);
 		std::string				getAgentView() const;
 		s_player&				getPlayer();
+		s_apple&				getAppleByPos(const sf::Vector2i &pos);
 		std::vector<s_apple>&	getApples();
 		std::string&			getGrid();
+		bool					occupiedByBody(const sf::Vector2i &pos);
+		bool					occupiedByApples(const sf::Vector2i &pos);
+		bool					wallHit(const sf::Vector2i &pos);
+		void					moveApple(s_apple &apple);
+		bool					isCloserMove() const;
+		void					reset();
 
 	private:
 		std::vector<s_apple>	apples;
-		s_player			player;
-		std::string			grid;
-		int					size;
+		s_player				player;
+		std::string				grid;
+		bool					closer;
+		int						size;
 
 		void	initPlayer();
 		void	initApples();
 		void	initGrid();
 		bool	occupiedByPlayer(const sf::Vector2i &pos);
-		bool	occupiedByApples(const sf::Vector2i &pos);
+		bool	moveInBonusDir(const sf::Vector2i &pos, player_dir dir);
 };
 
 #endif //GRID_HPP

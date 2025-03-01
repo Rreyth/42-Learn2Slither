@@ -9,6 +9,7 @@ Grid::Grid(const int &size)
 	this->initPlayer();
 	this->initApples();
 	this->initGrid();
+	this->closer = false;
 }
 
 
@@ -75,6 +76,7 @@ void	Grid::initPlayer()
 
 	this->player.dir = static_cast<player_dir>(dir_dist(gen));
 
+	this->player.body_pos.clear();
 	while (!hasEnoughSpace(this->player.head_pos, this->player.dir, this->size))
 		this->player.dir = static_cast<player_dir>(dir_dist(gen));
 
@@ -101,8 +103,20 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 }
 
 
+bool	Grid::occupiedByBody(const sf::Vector2i &pos)
+{
+	for (const sf::Vector2i &body : this->player.body_pos)
+	{
+		if (pos == body)
+			return true;
+	}
+	return false;
+}
+
+
 void	Grid::initApples()
 {
+	this->apples.clear();
 	s_apple	bonus1{true},
 			bonus2{true},
 			malus{false};
@@ -209,6 +223,7 @@ void	Grid::movePlayer(const player_dir &dir)
 	// move head
 	sf::Vector2i old_pos, tmp;
 	old_pos = this->player.head_pos;
+	this->closer = this->moveInBonusDir(old_pos, dir);
 	switch (dir)
 	{
 		case UP:
@@ -269,7 +284,75 @@ std::vector<s_apple>&	Grid::getApples()
 }
 
 
+s_apple&	Grid::getAppleByPos(const sf::Vector2i &pos)
+{
+	for (s_apple &apple : this->apples)
+	{
+		if (pos == apple.pos)
+			return (apple);
+	}
+	return s_apple() = {};
+}
+
+
 std::string	&Grid::getGrid()
 {
 	return (this->grid);
+}
+
+
+bool	Grid::wallHit(const sf::Vector2i &pos)
+{
+	return (pos.x == 0 || pos.y == 0
+		|| pos.x == this->size - 1 || pos.y == this->size - 1);
+}
+
+
+void	Grid::moveApple(s_apple &apple)
+{
+	std::random_device	rd;
+	std::mt19937		gen(rd());
+
+	std::uniform_int_distribution int_dist(1, this->size - 2);
+
+	sf::Vector2i	pos;
+	pos.x = int_dist(gen);
+	pos.y = int_dist(gen);
+	while (this->occupiedByApples(pos) || this->occupiedByPlayer(pos))
+	{
+		pos.x = int_dist(gen);
+		pos.y = int_dist(gen);
+	}
+	apple.pos = pos;
+}
+
+
+bool	Grid::moveInBonusDir(const sf::Vector2i &pos, player_dir dir)
+{
+	for (s_apple &apple : this->apples)
+	{
+		if (!apple.bonus)
+			continue;
+		if ((dir == UP && (pos.y > apple.pos.y && pos.x == apple.pos.x))
+			|| (dir == DOWN && (pos.y < apple.pos.y && pos.x == apple.pos.x))
+			|| (dir == LEFT && (pos.x > apple.pos.x && pos.y == apple.pos.y))
+			|| (dir == RIGHT && (pos.x < apple.pos.x && pos.y == apple.pos.y)))
+			return true;
+	}
+	return false;
+}
+
+
+bool	Grid::isCloserMove() const
+{
+	return (this->closer);
+}
+
+
+void	Grid::reset()
+{
+	this->initPlayer();
+	this->initApples();
+	this->initGrid();
+	this->closer = false;
 }

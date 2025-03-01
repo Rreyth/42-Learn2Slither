@@ -17,12 +17,14 @@ class Environment
 		Visual		*visual = nullptr;
 		flags		env_flags;
 		Grid		grid;
-		bool		running;
+		bool		running, move;
 
 		void	input();
 		void	tick(float delta);
 		void	render();
+		int		checkMove();
 		void	close();
+		void	reset();
 
 		// TODO: to_state State struct
 };

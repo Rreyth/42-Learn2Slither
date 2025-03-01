@@ -23,6 +23,7 @@ Environment::Environment(const flags &launch_flags) : grid(launch_flags.size)
 	// TODO: init agent with sessions and dontlearn
 
 	this->running = true;
+	this->move = false;
 }
 
 
@@ -67,13 +68,29 @@ void Environment::input()
 			if (keyPressed->code == sf::Keyboard::Key::Escape)
 				this->close();
 			else if (keyPressed->code == sf::Keyboard::Key::Up)
+			{
+				this->move = true;
 				this->grid.movePlayer(UP);
+			}
 			else if (keyPressed->code == sf::Keyboard::Key::Down)
+			{
+				this->move = true;
 				this->grid.movePlayer(DOWN);
+			}
 			else if (keyPressed->code == sf::Keyboard::Key::Left)
+			{
+				this->move = true;
 				this->grid.movePlayer(LEFT);
+			}
 			else if (keyPressed->code == sf::Keyboard::Key::Right)
+			{
+				this->move = true;
 				this->grid.movePlayer(RIGHT);
+			}
+			else if (keyPressed->code == sf::Keyboard::Key::Space)
+			{
+				this->reset();
+			}
 		}
 	}
 }
@@ -81,13 +98,9 @@ void Environment::input()
 
 void Environment::tick(float delta)
 {
-	// TODO : if move in wall or in body part -> dead
-	// check head pos
-	// if head on body or wall -> dead (- 100)
-	// elif head on bonus -> + 30 -> move apple
-	// elif head on malus -> - 30 -> move apple
-	// elif closer to bonus -> + 1
-	// else -> - 1
+	int reward = this->checkMove();
+	if (reward != 0)
+		std::cout << "Reward: " << reward << std::endl;
 }
 
 
@@ -102,6 +115,36 @@ void Environment::render()
 }
 
 
+int Environment::checkMove()
+{
+	int reward = -1;
+	if (!this->move)
+		return 0;
+	this->move = false;
+	sf::Vector2i pos = this->grid.getPlayer().head_pos;
+
+	if (this->grid.wallHit(pos) || this->grid.occupiedByBody(pos))
+	{
+		// TODO: death -> if AI -> next session
+		reward = -100;
+	}
+	else if (this->grid.occupiedByApples(pos))
+	{
+		s_apple& apple = this->grid.getAppleByPos(pos);
+		if (apple.bonus)
+			reward = 30;
+		else
+			reward = -30;
+		this->grid.moveApple(apple);
+		//TODO: update snake size -> if body parts = 0 ? if total len = 0 ? -> death
+	}
+	else if (this->grid.isCloserMove())
+		reward = 1;
+
+	return reward;
+}
+
+
 void Environment::close()
 {
 	if (this->visual)
@@ -110,6 +153,14 @@ void Environment::close()
 	}
 	this->running = false;
 }
+
+
+void Environment::reset()
+{
+	this->running = true;
+	this->grid.reset();
+}
+
 
 // # print if no visual
 // # load msg
