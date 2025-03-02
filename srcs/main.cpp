@@ -1,5 +1,5 @@
-#include "parser.hpp"
-#include "Environment/Environment.hpp"
+#include <utils/parser.hpp>
+#include <Environment/Environment.hpp>
 
 
 int main(int argc, char **argv)

@@ -1,23 +1,15 @@
 #ifndef GRID_HPP
-#define GRID_HPP
-#include <string>
-#include <vector>
-#include <SFML/System.hpp>
+# define GRID_HPP
+# include <string>
+# include <vector>
+# include <SFML/System.hpp>
+# include <utils/enums.hpp>
 
 
 struct s_apple
 {
 	bool			bonus;
 	sf::Vector2i	pos;
-};
-
-
-enum player_dir
-{
-	UP,
-	DOWN,
-	LEFT,
-	RIGHT
 };
 
 
@@ -40,7 +32,6 @@ class Grid
 		s_player&				getPlayer();
 		s_apple&				getAppleByPos(const sf::Vector2i &pos);
 		std::vector<s_apple>&	getApples();
-		std::string&			getGrid();
 		bool					occupiedByBody(const sf::Vector2i &pos);
 		bool					occupiedByApples(const sf::Vector2i &pos);
 		bool					wallHit(const sf::Vector2i &pos);
@@ -54,14 +45,12 @@ class Grid
 	private:
 		std::vector<s_apple>	apples;
 		s_player				player;
-		std::string				grid;
 		sf::Vector2i			next_body_pos;
 		bool					closer;
 		int						size;
 
 		void	initPlayer();
 		void	initApples();
-		void	initGrid();
 		bool	occupiedByPlayer(const sf::Vector2i &pos);
 		bool	moveInBonusDir(const sf::Vector2i &pos, player_dir dir);
 };

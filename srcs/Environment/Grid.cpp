@@ -1,14 +1,12 @@
-#include "Grid.hpp"
-
+#include <Environment/Grid.hpp>
 #include <random>
-#include <iostream>
+
 
 Grid::Grid(const int &size)
 {
 	this->size = size + 2;
 	this->initPlayer();
 	this->initApples();
-	this->initGrid();
 	this->closer = false;
 }
 
@@ -165,59 +163,6 @@ bool	Grid::occupiedByApples(const sf::Vector2i &pos)
 }
 
 
-void Grid::initGrid()
-{
-	sf::Vector2i	test_pos(0, 0);
-
-	this->grid = "";
-
-	for (int y = 0; y <= this->size - 1; y++)
-	{
-		test_pos.y = y;
-		for (int x = 0; x <= this->size - 1; x++)
-		{
-			test_pos.x = x;
-			if (y == 0 || y == this->size - 1 || x == 0 || x == this->size - 1)
-				this->grid += "W";
-			else if (this->occupiedByPlayer(test_pos))
-			{
-				if (this->player.head_pos == test_pos)
-					this->grid += "H";
-				else
-					this->grid += "S";
-			}
-			else if (this->occupiedByApples(test_pos))
-			{
-				for (const s_apple &apple : this->apples)
-				{
-					if (test_pos == apple.pos)
-					{
-						if (apple.bonus)
-							this->grid += 'G';
-						else
-							this->grid += 'R';
-					}
-				}
-			}
-			else
-				this->grid += "0";
-		}
-	}
-
-	//TODO RM
-
-	std::cout << "player pos : " << this->player.head_pos.x << ", " << this->player.head_pos.y << std::endl;
-	std::cout << "game map:" << std::endl;
-	for (int i = 0; i <= this->grid.length(); i++)
-	{
-		if (i % this->size == 0)
-			std::cout << std::endl;
-		std::cout << this->grid[i];
-	}
-	std::cout << std::endl;
-}
-
-
 void	Grid::movePlayer(const player_dir &dir)
 {
 	// move head
@@ -250,26 +195,11 @@ void	Grid::movePlayer(const player_dir &dir)
 }
 
 
-std::string	Grid::getAgentView() const //TODO: redo with state struct - rm string vers of map
+std::string	Grid::getAgentView() const
 {
-	std::string	agent_view = "";
+	// TODO: state struct (agent see only 4 dirs from head)
 
-	int			y = this->player.head_pos.x;
-	while (y <= this->grid.length())
-	{
-		agent_view += this->grid[y];
-		y += this->size;
-	}
-
-	int	x = 0;
-	y = this->player.head_pos.y;
-	while (x < this->size)
-	{
-		agent_view += this->grid[(y * this->size) + x];
-		x++;
-	}
-
-	return (agent_view);
+	return ("");
 }
 
 
@@ -293,12 +223,6 @@ s_apple&	Grid::getAppleByPos(const sf::Vector2i &pos)
 			return (apple);
 	}
 	return s_apple() = {};
-}
-
-
-std::string	&Grid::getGrid()
-{
-	return (this->grid);
 }
 
 
@@ -368,10 +292,9 @@ int Grid::getPlayerLen() const
 }
 
 
-void	Grid::reset()
+void	Grid::reset() //TODO: RM ?
 {
 	this->initPlayer();
 	this->initApples();
-	this->initGrid();
 	this->closer = false;
 }

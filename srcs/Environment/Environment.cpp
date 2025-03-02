@@ -1,21 +1,9 @@
-#include "Environment.hpp"
+#include <Environment/Environment.hpp>
 #include <iostream>
 
 Environment::Environment(const flags &launch_flags) : grid(launch_flags.size)
 {
 	this->env_flags = launch_flags;
-
-	// std::string	test = this->grid.getAgentView();
-	// s_player player = this->grid.getPlayer();
-	// std::string	spaces(player.head_pos.x, ' ');
-	// std::cout << "Agent view:" << std::endl;
-	// for (int y = 0; y < this->env_flags.size + 2; y++)
-	// {
-	// 	if (y == player.head_pos.y)
-	// 		std::cout << &test[this->env_flags.size + 2] << std::endl;
-	// 	else
-	// 		std::cout << spaces << test[y] << std::endl;
-	// }
 
 	if (launch_flags.visual)
 		this->visual = new Visual(launch_flags.size);
@@ -61,41 +49,7 @@ void Environment::input()
 {
 	if (!this->visual)
 		return;
-	sf::RenderWindow	&win = this->visual->getWin();
-	while (const std::optional event = win.pollEvent())
-	{
-		if (event->is<sf::Event::Closed>())
-			this->close();
-		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
-		{
-			if (keyPressed->code == sf::Keyboard::Key::Escape)
-				this->close();
-			else if (keyPressed->code == sf::Keyboard::Key::Up)
-			{
-				this->move = true;
-				this->grid.movePlayer(UP);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Down)
-			{
-				this->move = true;
-				this->grid.movePlayer(DOWN);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Left)
-			{
-				this->move = true;
-				this->grid.movePlayer(LEFT);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Right)
-			{
-				this->move = true;
-				this->grid.movePlayer(RIGHT);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Space)
-			{
-				this->reset();
-			}
-		}
-	}
+	this->input_manager.manageInput(*this, *this->visual, GAME);
 }
 
 
@@ -116,8 +70,6 @@ void Environment::render()
 	else
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
 			this->nb_move, this->max_size, this->last_reward);
-		// this->visual.render -> map + infos
-
 }
 
 
@@ -164,6 +116,18 @@ int Environment::checkMove()
 		reward = 1;
 
 	return reward;
+}
+
+
+void Environment::setMove(bool moved)
+{
+	this->move = moved;
+}
+
+
+Grid	&Environment::getGrid()
+{
+	return this->grid;
 }
 
 

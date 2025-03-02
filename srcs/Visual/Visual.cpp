@@ -1,4 +1,4 @@
-#include "Visual.hpp"
+#include <Visual/Visual.hpp>
 
 Visual::Visual(const int &tiles)
 {

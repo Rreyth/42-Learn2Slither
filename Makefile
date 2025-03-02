@@ -17,10 +17,11 @@ BUILD				:= build
 
 #====================================TARGETS===================================#
 SRCS				:=	srcs/main.cpp \
-						srcs/parser.cpp \
-						srcs/Environment/Environment.cpp \
+						srcs/utils/parser.cpp \
+						srcs/Visual/Visual.cpp \
 						srcs/Environment/Grid.cpp \
-						srcs/Visual/Visual.cpp
+						srcs/Environment/Environment.cpp \
+						srcs/Environment/InputManager.cpp \
 
 OBJS 				:= ${SRCS:srcs/%.cpp=$(BUILD)/%.o}
 DEPS				:= $(SRCS:srcs/%.cpp=$(BUILD)/%.d)

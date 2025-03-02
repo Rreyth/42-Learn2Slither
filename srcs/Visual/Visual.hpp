@@ -2,7 +2,7 @@
 # define VISUAL_HPP
 
 # include <SFML/Graphics.hpp>
-# include "../Environment/Grid.hpp"
+# include <Environment/Grid.hpp>
 
 # define TILE_SIZE 32
 # define MAX_FPS 1000
