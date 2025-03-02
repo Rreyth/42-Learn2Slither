@@ -20,6 +20,17 @@ Visual::Visual(const int &tiles)
 
 	this->window.setPosition(windowPosition);
 	this->window.setKeyRepeatEnabled(false);
+
+	try
+	{
+		if (!this->font.openFromFile("data/SquadaOne.ttf"))
+			throw std::invalid_argument("");
+	}
+	catch (const std::exception &e)
+	{
+		window.close();
+		exit(EXIT_FAILURE);
+	}
 }
 
 
@@ -96,11 +107,47 @@ void	Visual::drawElements(s_player &player, std::vector<s_apple> &apples)
 }
 
 
-void	Visual::render(s_player &player, std::vector<s_apple> &apples)
+void	Visual::displayInfos(int nb_moves, int max_size, int reward)
+{
+	float			y_mult;
+	sf::Text		text(this->font, "", 35);
+	sf::Vector2f	pos;
+	sf::Vector2f	init_pos;
+	std::string		all_str[] = {"Nb moves:", std::to_string(nb_moves),
+							"Max size:", std::to_string(max_size),
+							"Last reward:", std::to_string(reward)};
+
+	text.setStyle(sf::Text::Bold);
+	text.setFillColor(sf::Color::White);
+	init_pos.x = this->window.getSize().x * 3 / 4;
+	init_pos.y = this->window.getSize().y;
+	y_mult = 0.05;
+
+	for (std::string str : all_str)
+	{
+		text.setString(str);
+		pos.x = init_pos.x - text.getLocalBounds().size.x / 2;
+		pos.y = init_pos.y * y_mult;
+		text.setPosition(pos);
+		this->window.draw(text);
+
+		y_mult += 0.15;
+	}
+}
+
+
+void	Visual::render(s_player &player, std::vector<s_apple> &apples,
+						int nb_moves, int max_size, int reward)
 {
 	//TODO : replace rect with sprites
 	this->window.clear();
+
+	// left side
 	this->drawGrid();
 	this->drawElements(player, apples);
+
+	// right side
+	this->displayInfos(nb_moves, max_size, reward);
+
 	this->window.display();
 }

@@ -18,6 +18,7 @@ class Environment
 		flags		env_flags;
 		Grid		grid;
 		bool		running, move;
+		int			nb_move, max_size, last_reward;
 
 		void	input();
 		void	tick(float delta);

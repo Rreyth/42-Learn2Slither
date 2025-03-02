@@ -24,6 +24,9 @@ Environment::Environment(const flags &launch_flags) : grid(launch_flags.size)
 
 	this->running = true;
 	this->move = false;
+	this->nb_move = 0;
+	this->max_size = 3;
+	this->last_reward = 0;
 }
 
 
@@ -100,7 +103,9 @@ void Environment::tick(float delta)
 {
 	int reward = this->checkMove();
 	if (reward != 0)
-		std::cout << "Reward: " << reward << std::endl;
+	{
+		this->last_reward = reward;
+	}
 }
 
 
@@ -109,7 +114,8 @@ void Environment::render()
 	if (!this->visual) //TODO
 		std::cout << "WIP -> PRINT TRAINING INFOS" << std::endl;
 	else
-		this->visual->render(this->grid.getPlayer(), this->grid.getApples());
+		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
+			this->nb_move, this->max_size, this->last_reward);
 		// this->visual.render -> map + infos
 
 }
@@ -120,6 +126,7 @@ int Environment::checkMove()
 	int reward = -1;
 	if (!this->move)
 		return 0;
+	this->nb_move++;
 	this->move = false;
 	sf::Vector2i pos = this->grid.getPlayer().head_pos;
 
@@ -140,14 +147,17 @@ int Environment::checkMove()
 		else
 		{
 			this->grid.playerShrink();
-			if (this->grid.getPlayerLen() == 0)
-			{
-				reward = -100; // TODO: death
-				this->reset();
-			}
-			else
-				reward = -30;
+			reward = -30;
 		}
+		int	current_len = this->grid.getPlayerLen();
+		if (current_len == 0)
+		{
+			// TODO: death
+			this->reset();
+			return -100;
+		}
+		if (current_len + 1 > this->max_size)
+			this->max_size = current_len + 1;
 		this->grid.moveApple(apple);
 	}
 	else if (this->grid.isCloserMove())
@@ -171,6 +181,9 @@ void Environment::reset()
 {
 	this->running = true;
 	this->grid.reset();
+	this->nb_move = 0;
+	this->max_size = 3;
+	this->last_reward = 0;
 }
 
 
