@@ -10,7 +10,7 @@
 class Environment
 {
 	public:
-		Environment(const flags &launch_flags);
+		Environment(flags &launch_flags);
 		~Environment();
 		void	run();
 		void	setMove(bool moved);

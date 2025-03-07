@@ -1,28 +1,24 @@
 #include <Visual/Visual.hpp>
 
-Visual::Visual(const int &tiles)
+Visual::Visual(const int &tiles) : text(this->font, "", 35)
 {
 	this->tiles_nb = tiles + 2;
 	sf::Vector2u win_size(this->tiles_nb * TILE_SIZE * 2, this->tiles_nb * TILE_SIZE);
-	this->grid_pos = sf::Vector2i(win_size.x * 0.5 - win_size.y,
-		win_size.y * 0.5 - this->tiles_nb * 0.5 * TILE_SIZE);
+	this->grid_pos = sf::Vector2i(win_size.x * 0.5 - win_size.y, win_size.y * 0.5 - this->tiles_nb * 0.5 * TILE_SIZE);
 
-	this->window = sf::RenderWindow(sf::VideoMode({win_size.x, win_size.y}),
-		"I'M A SNAKE!", sf::Style::Close);
+	this->window = sf::RenderWindow(sf::VideoMode({win_size.x, win_size.y}), "I'M A SNAKE!", sf::Style::Close);
 	this->window.setFramerateLimit(MAX_FPS);
 
 	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
 
-	sf::Vector2i windowPosition(
-		(desktop.size.x - window.getSize().x) / 2,
-		(desktop.size.y - window.getSize().y) / 2
-	);
+	sf::Vector2i windowPosition((desktop.size.x - window.getSize().x) / 2, (desktop.size.y - window.getSize().y) / 2);
 
 	this->window.setPosition(windowPosition);
 	this->window.setKeyRepeatEnabled(false);
 
 	try
 	{
+		this->texture_manager.loadTextures();
 		if (!this->font.openFromFile("data/SquadaOne.ttf"))
 			throw std::invalid_argument("");
 	}
@@ -31,6 +27,7 @@ Visual::Visual(const int &tiles)
 		window.close();
 		exit(EXIT_FAILURE);
 	}
+	this->text = sf::Text(this->font, "", 35);
 }
 
 
@@ -109,28 +106,21 @@ void	Visual::drawElements(s_player &player, std::vector<s_apple> &apples)
 
 void	Visual::displayInfos(int nb_moves, int max_size, int reward)
 {
-	float			y_mult;
-	sf::Text		text(this->font, "", 35);
+	float			y_mult, y_init;
 	sf::Vector2f	pos;
-	sf::Vector2f	init_pos;
 	std::string		all_str[] = {"Nb moves:", std::to_string(nb_moves),
 							"Max size:", std::to_string(max_size),
 							"Last reward:", std::to_string(reward)};
 
-	text.setStyle(sf::Text::Bold);
-	text.setFillColor(sf::Color::White);
-	init_pos.x = this->window.getSize().x * 3 / 4;
-	init_pos.y = this->window.getSize().y;
-	y_mult = 0.05;
+	pos.x = this->window.getSize().x * 3 / 4;
+	y_init = this->window.getSize().y;
+	y_mult = 0.1;
 
 	for (std::string str : all_str)
 	{
-		text.setString(str);
-		pos.x = init_pos.x - text.getLocalBounds().size.x / 2;
-		pos.y = init_pos.y * y_mult;
-		text.setPosition(pos);
-		this->window.draw(text);
-
+		pos.y = y_init * y_mult;
+		drawText(this->window, this->text, str, pos, 35,
+				sf::Text::Bold, sf::Color::White);
 		y_mult += 0.15;
 	}
 }

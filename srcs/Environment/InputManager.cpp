@@ -6,7 +6,6 @@
 
 InputManager::InputManager()
 {
-	this->buttonPressed = false;
 }
 
 
@@ -15,67 +14,68 @@ InputManager::InputManager()
 }
 
 
-void	InputManager::manageKeyboard(Environment &env, Visual &visual)
+void	InputManager::manageKeyboard(Environment &env, const std::optional<sf::Event> &event)
 {
-	sf::RenderWindow	&win = visual.getWin();
-	while (const std::optional event = win.pollEvent())
+	if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 	{
-		if (event->is<sf::Event::Closed>())
+		if (keyPressed->code == sf::Keyboard::Key::Escape)
 			env.close();
-		else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+		else if (keyPressed->code == sf::Keyboard::Key::Up)
 		{
-			if (keyPressed->code == sf::Keyboard::Key::Escape)
-				env.close();
-			else if (keyPressed->code == sf::Keyboard::Key::Up)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(UP);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Down)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(DOWN);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Left)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(LEFT);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Right)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(RIGHT);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Space)
-			{
-				env.reset();
-			}
+			env.setMove(true);
+			env.getGrid().movePlayer(UP);
+		}
+		else if (keyPressed->code == sf::Keyboard::Key::Down)
+		{
+			env.setMove(true);
+			env.getGrid().movePlayer(DOWN);
+		}
+		else if (keyPressed->code == sf::Keyboard::Key::Left)
+		{
+			env.setMove(true);
+			env.getGrid().movePlayer(LEFT);
+		}
+		else if (keyPressed->code == sf::Keyboard::Key::Right)
+		{
+			env.setMove(true);
+			env.getGrid().movePlayer(RIGHT);
+		}
+		else if (keyPressed->code == sf::Keyboard::Key::Space)
+		{
+			env.reset();
 		}
 	}
 }
 
 
-void	InputManager::manageMouse(Environment &env, Visual &visual)
+void	InputManager::manageMouse(Environment &env, Visual &visual, const std::optional<sf::Event> &event)
 {
-	sf::Vector2i mousePos = sf::Mouse::getPosition(visual.getWin());
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && !this->buttonPressed)
+	if (const auto* pressedBtn = event->getIf<sf::Event::MouseButtonPressed>())
 	{
-		this->buttonPressed = true;
-		std::cout << "CLICK" << std::endl;
-		//visual.click(mousePos) -> check if mouse on button -> return button ?
+		if (pressedBtn->button == sf::Mouse::Button::Left)
+		{
+			mouse.updateMbutton(MBUT_LEFT, true);
+		}
 	}
-	else if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left) && this->buttonPressed)
+	else if (const auto* releasedBtn = event->getIf<sf::Event::MouseButtonReleased>())
 	{
-		this->buttonPressed = false;
-		std::cout << "RELEASE" << std::endl;
+		if (releasedBtn->button == sf::Mouse::Button::Left)
+		{
+			mouse.updateMbutton(MBUT_LEFT, false);
+		}
 	}
 }
 
 
 void	InputManager::manageInput(Environment &env, Visual &visual, gameState state)
 {
-	if (state == GAME)
-		this->manageKeyboard(env, visual);
-	this->manageMouse(env, visual);
+	sf::RenderWindow	&win = visual.getWin();
+	while (const std::optional event = win.pollEvent())
+	{
+		if (event->is<sf::Event::Closed>())
+			env.close();
+		this->manageMouse(env, visual, event);
+		if (state == GAME)
+			this->manageKeyboard(env, event);
+	}
 }

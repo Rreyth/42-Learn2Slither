@@ -3,6 +3,8 @@
 
 # include <SFML/Graphics.hpp>
 # include <Environment/Grid.hpp>
+# include <utils/TextureManager.hpp>
+# include <utils/functions.hpp>
 
 # define TILE_SIZE 32
 # define MAX_FPS 1000
@@ -22,6 +24,8 @@ class Visual
 		sf::RenderWindow	window;
 		sf::Vector2i		grid_pos;
 		sf::Font			font;
+		sf::Text			text;
+		TextureManager		texture_manager;
 		int					tiles_nb;
 
 		void				drawGrid();

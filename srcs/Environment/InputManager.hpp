@@ -2,6 +2,7 @@
 #define INPUTMANAGER_HPP
 
 #include <Visual/Visual.hpp>
+#include <utils/Mouse.hpp>
 #include <utils/enums.hpp>
 
 
@@ -17,10 +18,10 @@ class InputManager
 		void	manageInput(Environment &env, Visual &visual, gameState state);
 
 	private:
-		bool buttonPressed;
+		Mouse	mouse;
 
-		void manageKeyboard(Environment &env, Visual &visual);
-		void manageMouse(Environment &env, Visual &visual);
+		void manageKeyboard(Environment &env, const std::optional<sf::Event> &event);
+		void manageMouse(Environment &env, Visual &visual, const std::optional<sf::Event> &event);
 };
 
 

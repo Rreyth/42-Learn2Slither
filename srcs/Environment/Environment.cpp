@@ -1,7 +1,7 @@
 #include <Environment/Environment.hpp>
 #include <iostream>
 
-Environment::Environment(const flags &launch_flags) : grid(launch_flags.size)
+Environment::Environment(flags &launch_flags) : grid(launch_flags.size)
 {
 	this->env_flags = launch_flags;
 
