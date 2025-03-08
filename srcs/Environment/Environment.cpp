@@ -6,7 +6,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size)
 	this->env_flags = launch_flags;
 
 	if (launch_flags.visual)
-		this->visual = new Visual(launch_flags.size);
+		this->visual = new Visual(launch_flags);
 
 	// TODO: init agent with sessions and dontlearn
 
@@ -49,7 +49,7 @@ void Environment::input()
 {
 	if (!this->visual)
 		return;
-	this->input_manager.manageInput(*this, *this->visual, GAME);
+	this->input_manager.manageInput(*this, *this->visual);
 }
 
 

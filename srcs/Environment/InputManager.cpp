@@ -67,7 +67,7 @@ void	InputManager::manageMouse(Environment &env, Visual &visual, const std::opti
 }
 
 
-void	InputManager::manageInput(Environment &env, Visual &visual, gameState state)
+void	InputManager::manageInput(Environment &env, Visual &visual)
 {
 	sf::RenderWindow	&win = visual.getWin();
 	while (const std::optional event = win.pollEvent())
@@ -75,7 +75,7 @@ void	InputManager::manageInput(Environment &env, Visual &visual, gameState state
 		if (event->is<sf::Event::Closed>())
 			env.close();
 		this->manageMouse(env, visual, event);
-		if (state == GAME)
+		if (visual.getState() == GAME)
 			this->manageKeyboard(env, event);
 	}
 }

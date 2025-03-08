@@ -20,17 +20,22 @@ TextureManager::~TextureManager(void)
 ////////////////////////////////////////////////////////////////////////////////
 // Public methods
 ////////////////////////////////////////////////////////////////////////////////
+
+sf::Vector2u	TextureManager::getTextureSize(sprite_name name) const
+{
+	return this->textures[name].getSize();
+}
+
+
 void	TextureManager::loadTextures(void)
 {
 	// Load sprites
 	this->loadTexture(SPRITE_BUTTON_OFF, "round_button_off.png");
 	this->loadTexture(SPRITE_BUTTON_ON, "round_button_on.png");
+	this->loadTexture(SPRITE_WIDE_BUTTON_OFF, "wide_button(off).png");
+	this->loadTexture(SPRITE_WIDE_BUTTON_ON, "wide_button(on).png");
 	this->loadTexture(SPRITE_CIRCLE_OFF, "circleOff.png");
 	this->loadTexture(SPRITE_CIRCLE_ON, "circleOn.png");
-
-	// Scale sprites
-	// this->scaleSprite(SPRITE_BUTTON_OFF, 2.0f, 2.0f);
-	// this->scaleSprite(SPRITE_BUTTON_ON, 2.0f, 2.0f);
 }
 
 

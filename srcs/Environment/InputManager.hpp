@@ -15,7 +15,7 @@ class InputManager
 		InputManager();
 		~InputManager();
 
-		void	manageInput(Environment &env, Visual &visual, gameState state);
+		void	manageInput(Environment &env, Visual &visual);
 
 	private:
 		Mouse	mouse;

@@ -5,6 +5,8 @@
 # include <Environment/Grid.hpp>
 # include <utils/TextureManager.hpp>
 # include <utils/functions.hpp>
+# include <utils/enums.hpp>
+# include <Visual/Screen/Menu.hpp>
 
 # define TILE_SIZE 32
 # define MAX_FPS 1000
@@ -13,10 +15,11 @@
 class Visual
 {
 	public:
-		Visual(const int &tiles);
+		Visual(flags &launch_flags);
 		~Visual();
 
 		sf::RenderWindow	&getWin();
+		gameState			&getState();
 		void				render(s_player &player, std::vector<s_apple> &apples,
 									int nb_moves, int max_size, int reward);
 
@@ -26,6 +29,8 @@ class Visual
 		sf::Font			font;
 		sf::Text			text;
 		TextureManager		texture_manager;
+		Menu				menu;
+		gameState			state;
 		int					tiles_nb;
 
 		void				drawGrid();

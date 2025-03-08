@@ -24,7 +24,7 @@ flags parse_flags(int argc, char **argv)
 
 	help = "usage: ./snake [-h/--help] [-v/--visual] [-s/--save {filename}] "
 		"[-l/--load {filename}] [--dontlearn] [--stepmode] "
-		"[-n/--size {10 <= int <= 20}] [--sessions {int > 0}]]"
+		"[-n/--size {10 <= int <= 25}] [--sessions {int > 0}]]"
 		"\n\noptions:\n"
 		"  -h, --help\t\tShow this help message\n"
 		"  -v, --visual\t\tTurn on visual output\n"

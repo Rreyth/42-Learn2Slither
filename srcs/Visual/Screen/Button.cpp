@@ -11,6 +11,8 @@ Button::Button()
 	this->y = 0;
 	this->w = 0;
 	this->h = 0;
+	this->scaleOn = {1.0, 1.0};
+	this->scaleOff = {1.0, 1.0};
 
 	this->text = "";
 	this->fontSize = 0;
@@ -24,7 +26,9 @@ Button::Button()
 }
 
 Button::Button(std::string text, int fontSize, sf::Color textColor,
-				int x, int y, float w, float h, sprite_name onSprite, sprite_name offSprite)
+				int x, int y, float w, float h,
+				sprite_name onSprite, sprite_name offSprite,
+				TextureManager &texture_manager)
 {
 	this->x = x;
 	this->y = y;
@@ -40,6 +44,15 @@ Button::Button(std::string text, int fontSize, sf::Color textColor,
 
 	this->onSprite = onSprite;
 	this->offSprite = offSprite;
+
+	sf::Vector2u texture_size(texture_manager.getTextureSize(onSprite));
+
+	this->scaleOn = {w / static_cast<float>(texture_size.x),
+					h / static_cast<float>(texture_size.y)};
+
+	texture_size = texture_manager.getTextureSize(offSprite);
+	this->scaleOff = {w / static_cast<float>(texture_size.x),
+					h / static_cast<float>(texture_size.y)};
 }
 
 
@@ -70,13 +83,18 @@ void	Button::setText(std::string text)
 void Button::draw(sf::RenderWindow &window, sf::Text &text, TextureManager &textureManager)
 {
 	if (!this->mouseOver)
+	{
+		textureManager.scaleSprite(this->offSprite, this->scaleOff);
 		textureManager.drawTexture(window, this->offSprite, this->x, this->y);
+	}
 	else
+	{
+		textureManager.scaleSprite(this->onSprite, this->scaleOn);
 		textureManager.drawTexture(window, this->onSprite, this->x, this->y);
+	}
 
-	drawText(window, text, this->text,
-		this->x + (this->w / 2), this->y + (this->h / 2),
-		this->fontSize, sf::Text::Bold, this->textColor);
+	drawText(window, text, this->text, this->x, this->y,
+		this->fontSize, sf::Text::Regular, this->textColor);
 }
 
 
@@ -106,6 +124,9 @@ Button	&Button::operator=(const Button &btn)
 
 	this->onSprite = btn.onSprite;
 	this->offSprite = btn.offSprite;
+
+	this->scaleOff = btn.scaleOff;
+	this->scaleOn = btn.scaleOn;
 
 	return (*this);
 }

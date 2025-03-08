@@ -12,7 +12,9 @@ class Button
 public:
 	Button(void);
 	Button(std::string text, int fontSize, sf::Color textColor,
-			int x, int y, float w, float h, sprite_name onSprite, sprite_name offSprite);
+			int x, int y, float w, float h,
+			sprite_name onSprite, sprite_name offSprite,
+			TextureManager &texture_manager);
 	~Button();
 
 	bool	getPressed(void);
@@ -24,11 +26,12 @@ public:
 	Button	&operator=(const Button &btn);
 
 private:
-	int			x, y, w, h, fontSize;
-	sprite_name	onSprite, offSprite;
-	bool		mouseOver, pressed;
-	sf::Color	textColor, colorOff, colorOn;
-	std::string	text;
+	sf::Vector2f	scaleOn, scaleOff;
+	sf::Color		textColor, colorOff, colorOn;
+	sprite_name		onSprite, offSprite;
+	std::string		text;
+	int				x, y, w, h, fontSize;
+	bool			mouseOver, pressed;
 };
 
 
