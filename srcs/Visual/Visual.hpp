@@ -1,14 +1,14 @@
 #ifndef VISUAL_HPP
 # define VISUAL_HPP
 
-# include <SFML/Graphics.hpp>
-# include <Environment/Grid.hpp>
-# include <utils/TextureManager.hpp>
-# include <utils/functions.hpp>
-# include <utils/enums.hpp>
-# include <Visual/Screen/Menu.hpp>
+#include <Environment/Grid.hpp>
+#include <SFML/Graphics.hpp>
+#include <Visual/Screen/Menu.hpp>
+#include <utils/TextureManager.hpp>
+#include <utils/enums.hpp>
+#include <utils/functions.hpp>
 
-# define TILE_SIZE 32
+#define TILE_SIZE 32
 # define MAX_FPS 1000
 
 
@@ -22,6 +22,7 @@ class Visual
 		gameState			&getState();
 		void				render(s_player &player, std::vector<s_apple> &apples,
 									int nb_moves, int max_size, int reward);
+		void				tick(Environment &env, Mouse &mouse);
 
 	private:
 		sf::RenderWindow	window;

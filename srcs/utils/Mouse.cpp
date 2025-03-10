@@ -9,10 +9,7 @@ Mouse::Mouse(void)
 	this->x = 0;
 	this->y = 0;
 	for (int i = 0; i < 3; i++)
-	{
 		this->pressed[i] = false;
-		this->down[i] = false;
-	}
 }
 
 
@@ -42,10 +39,10 @@ bool	Mouse::isPressed(mouse_button mbut) const
 }
 
 
-bool	Mouse::isDown(mouse_button mbut) const
-{
-	return (this->down[mbut]);
-}
+// bool	Mouse::isDown(mouse_button mbut) const
+// {
+// 	return (this->down[mbut]);
+// }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Public methods
@@ -67,10 +64,9 @@ void	Mouse::updateMbutton(mouse_button mbut, bool state)
 	if (state)
 	{
 		this->pressed[mbut] = true;
-		this->down[mbut] = true;
 	}
 	else
-		this->down[mbut] = false;
+		this->pressed[mbut] = false;
 }
 
 

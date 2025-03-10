@@ -1,4 +1,5 @@
 #include <Visual/Visual.hpp>
+#include <Environment/Environment.hpp>
 
 Visual::Visual(flags &launch_flags) : text(this->font, "", 35), menu(launch_flags)
 {
@@ -159,4 +160,21 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 	// this->displayInfos(nb_moves, max_size, reward);
 
 	this->window.display();
+}
+
+
+void	Visual::tick(Environment &env, Mouse &mouse)
+{
+	switch (this->state)
+	{
+		case MENU:
+			this->menu.tick(env, mouse);
+			break;
+		case GAME:
+			// this->menu.tick(delta, mouse);
+			break;
+		case GAMEOVER:
+			// this->menu.tick(delta, mouse);
+			break;
+	}
 }

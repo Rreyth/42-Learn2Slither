@@ -19,7 +19,7 @@ public:
 	int		getX(void) const;
 	int		getY(void) const;
 	bool	isPressed(mouse_button mbut) const;
-	bool	isDown(mouse_button mbut) const;
+	// bool	isDown(mouse_button mbut) const;
 
 	void	updatePosition(sf::RenderWindow &window);
 	void	updateMbutton(mouse_button mbut, bool state);
@@ -28,7 +28,7 @@ public:
 
 private:
 	int			x, y;
-	bool		pressed[3], down[3];
+	bool		pressed[3];
 };
 
 #endif

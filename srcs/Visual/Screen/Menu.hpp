@@ -1,8 +1,10 @@
 #ifndef MENU_HPP
 # define MENU_HPP
 
-# include <utils/parser.hpp>
-# include <Visual/Screen/Button.hpp>
+#include <Visual/Screen/Button.hpp>
+#include <utils/parser.hpp>
+
+class Environment;
 
 
 struct s_settings
@@ -26,6 +28,7 @@ class Menu
 		void		visualInit(sf::Vector2u win_size, TextureManager &texture_manager);
 		void		render(sf::RenderWindow &window, sf::Text &text,
 							TextureManager &texture_manager);
+		void		tick(Environment &env, Mouse &mouse);
 
 	private:
 		s_settings	settings;

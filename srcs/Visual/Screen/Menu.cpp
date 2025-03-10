@@ -1,6 +1,7 @@
 #include "Menu.hpp"
 
 #include <utils/functions.hpp>
+#include <Environment/Environment.hpp>
 
 
 Menu::Menu(const flags &launch_flags)
@@ -65,4 +66,23 @@ void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	this->AI_button.draw(window, text, texture_manager);
 	this->quit_button.draw(window, text, texture_manager);
 	//settings
+}
+
+
+void	Menu::tick(Environment &env, Mouse &mouse)
+{
+	this->play_button.tick(mouse);
+	this->AI_button.tick(mouse);
+	this->quit_button.tick(mouse);
+
+	if (this->quit_button.getPressed())
+		env.close();
+	else if (this->play_button.getPressed())
+	{
+		std::cout << "play" << std::endl;
+	}
+	else if (this->AI_button.getPressed())
+	{
+		std::cout << "AI" << std::endl;
+	}
 }

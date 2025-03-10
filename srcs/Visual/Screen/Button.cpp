@@ -100,7 +100,8 @@ void Button::draw(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 
 void Button::tick(Mouse &mouse)
 {
-	this->mouseOver = mouse.inRectangle(this->x, this->y, this->w, this->h);
+	this->mouseOver = mouse.inRectangle(this->x - this->w / 2, this->y - this->h / 2,
+										this->w, this->h);
 	this->pressed = this->mouseOver && mouse.isPressed(MBUT_LEFT);
 }
 

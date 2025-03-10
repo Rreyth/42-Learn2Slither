@@ -60,6 +60,10 @@ void Environment::tick(float delta)
 	{
 		this->last_reward = reward;
 	}
+	if (this->visual)
+	{
+		this->visual->tick(*this, this->input_manager.getMouse());
+	}
 }
 
 

@@ -70,6 +70,9 @@ void	InputManager::manageMouse(Environment &env, Visual &visual, const std::opti
 void	InputManager::manageInput(Environment &env, Visual &visual)
 {
 	sf::RenderWindow	&win = visual.getWin();
+
+	this->mouse.updatePosition(win);
+
 	while (const std::optional event = win.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>())
@@ -78,4 +81,10 @@ void	InputManager::manageInput(Environment &env, Visual &visual)
 		if (visual.getState() == GAME)
 			this->manageKeyboard(env, event);
 	}
+}
+
+
+Mouse	&InputManager::getMouse()
+{
+	return this->mouse;
 }
