@@ -17,8 +17,12 @@ public:
 			TextureManager &texture_manager);
 	~Button();
 
-	bool	getPressed(void);
-	void	setText(std::string text);
+	bool			getPressed(void);
+	bool			isDown(void);
+	void			setText(std::string text);
+	sf::Vector2i	getPos(void);
+	void			setPos(int x, int y);
+	void			setPos(sf::Vector2i pos);
 
 	void	tick(Mouse &mouse);
 	void	draw(sf::RenderWindow &window, sf::Text &text, TextureManager &textureManager);
@@ -31,7 +35,7 @@ private:
 	sprite_name		onSprite, offSprite;
 	std::string		text;
 	int				x, y, w, h, fontSize;
-	bool			mouseOver, pressed;
+	bool			mouseOver, pressed, down;
 };
 
 

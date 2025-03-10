@@ -168,7 +168,7 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 	switch (this->state)
 	{
 		case MENU:
-			this->menu.tick(env, mouse);
+			this->menu.tick(env, mouse, this->window);
 			break;
 		case GAME:
 			// this->menu.tick(delta, mouse);

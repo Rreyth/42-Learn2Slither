@@ -1,4 +1,4 @@
-#include <Visual/Screen/Button.hpp>
+#include <Visual/Screen/UI/Button.hpp>
 #include <utils/functions.hpp>
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -20,6 +20,7 @@ Button::Button()
 
 	this->mouseOver = false;
 	this->pressed = false;
+	this->down = false;
 
 	this->onSprite = SPRITE_BUTTON_ON;
 	this->offSprite = SPRITE_BUTTON_OFF;
@@ -41,6 +42,7 @@ Button::Button(std::string text, int fontSize, sf::Color textColor,
 
 	this->mouseOver = false;
 	this->pressed = false;
+	this->down = false;
 
 	this->onSprite = onSprite;
 	this->offSprite = offSprite;
@@ -71,9 +73,36 @@ bool Button::getPressed()
 }
 
 
+bool Button::isDown()
+{
+	return (this->down);
+}
+
+
 void	Button::setText(std::string text)
 {
 	this->text = text;
+}
+
+
+sf::Vector2i	Button::getPos()
+{
+	return {this->x, this->y};
+}
+
+
+
+void	Button::setPos(int x, int y)
+{
+	this->x = x;
+	this->y = y;
+}
+
+
+void	Button::setPos(sf::Vector2i pos)
+{
+	this->x = pos.x;
+	this->y = pos.y;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -103,6 +132,9 @@ void Button::tick(Mouse &mouse)
 	this->mouseOver = mouse.inRectangle(this->x - this->w / 2, this->y - this->h / 2,
 										this->w, this->h);
 	this->pressed = this->mouseOver && mouse.isPressed(MBUT_LEFT);
+	if (mouse.isDown(MBUT_LEFT) && this->down)
+		return;
+	this->down = this->mouseOver && mouse.isDown(MBUT_LEFT);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +154,7 @@ Button	&Button::operator=(const Button &btn)
 
 	this->mouseOver = btn.mouseOver;
 	this->pressed = btn.pressed;
+	this->down = btn.down;
 
 	this->onSprite = btn.onSprite;
 	this->offSprite = btn.offSprite;

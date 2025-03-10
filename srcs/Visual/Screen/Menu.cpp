@@ -27,8 +27,7 @@ s_settings &Menu::getSettings()
 
 void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 {
-	int x, y;
-	float w, h;
+	int x, y, w, h;
 
 	x = win_size.x * 1/4;
 	y = win_size.y * 0.4;
@@ -50,6 +49,13 @@ void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 	h = 40;
 	this->quit_button = Button("Quit", 25, sf::Color::White, x, y, w, h,
 						SPRITE_BUTTON_ON, SPRITE_BUTTON_OFF, texture_manager);
+
+	x = win_size.x * 0.5;
+	y = win_size.y * 0.5;
+	w = 200;
+	h = 10;
+	this->size_slider = Slider(0, 115, 65, {x, y}, {w, h},
+						SPRITE_CIRCLE_ON, SPRITE_CIRCLE_OFF, texture_manager);
 }
 
 
@@ -62,18 +68,20 @@ void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	sf::Vector2f pos(win_size.x / 2, win_size.y * 0.1);
 	drawText(window, text, "Learn2Slither", pos, 50, sf::Text::Bold, sf::Color::White);
 	//buttons
-	this->play_button.draw(window, text, texture_manager);
-	this->AI_button.draw(window, text, texture_manager);
-	this->quit_button.draw(window, text, texture_manager);
+	// this->play_button.draw(window, text, texture_manager);
+	// this->AI_button.draw(window, text, texture_manager);
+	// this->quit_button.draw(window, text, texture_manager);
 	//settings
+	this->size_slider.draw(window, text, texture_manager);
 }
 
 
-void	Menu::tick(Environment &env, Mouse &mouse)
+void	Menu::tick(Environment &env, Mouse &mouse, sf::RenderWindow &window)
 {
 	this->play_button.tick(mouse);
 	this->AI_button.tick(mouse);
 	this->quit_button.tick(mouse);
+	this->size_slider.tick(mouse, window);
 
 	if (this->quit_button.getPressed())
 		env.close();

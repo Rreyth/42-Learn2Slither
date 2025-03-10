@@ -1,7 +1,8 @@
 #ifndef MENU_HPP
 # define MENU_HPP
 
-#include <Visual/Screen/Button.hpp>
+#include <Visual/Screen/UI/Button.hpp>
+#include <Visual/Screen/UI/Slider.hpp>
 #include <utils/parser.hpp>
 
 class Environment;
@@ -28,12 +29,12 @@ class Menu
 		void		visualInit(sf::Vector2u win_size, TextureManager &texture_manager);
 		void		render(sf::RenderWindow &window, sf::Text &text,
 							TextureManager &texture_manager);
-		void		tick(Environment &env, Mouse &mouse);
+		void		tick(Environment &env, Mouse &mouse, sf::RenderWindow &window);
 
 	private:
 		s_settings	settings;
 		Button		play_button, AI_button, quit_button;
-		//size selector (slider ?)
+		Slider		size_slider;
 		//session selector
 		//learn toggle (default true)
 		//stepmode toggle
