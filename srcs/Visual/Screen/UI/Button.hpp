@@ -31,7 +31,7 @@ public:
 
 private:
 	sf::Vector2f	scaleOn, scaleOff;
-	sf::Color		textColor, colorOff, colorOn;
+	sf::Color		textColor;
 	sprite_name		onSprite, offSprite;
 	std::string		text;
 	int				x, y, w, h, fontSize;

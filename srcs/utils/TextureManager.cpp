@@ -36,6 +36,8 @@ void	TextureManager::loadTextures(void)
 	this->loadTexture(SPRITE_WIDE_BUTTON_ON, "wide_button(on).png");
 	this->loadTexture(SPRITE_CIRCLE_OFF, "circleOff.png");
 	this->loadTexture(SPRITE_CIRCLE_ON, "circleOn.png");
+	this->loadTexture(SPRITE_EMPTY_CHECK, "empty_check.png");
+	this->loadTexture(SPRITE_VALID_CHECK, "valid_check.png");
 }
 
 

@@ -62,6 +62,20 @@ void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 	w = 250;
 	this->sessions_slider = Slider(1, 1000, this->settings.sessions, "int", {x, y}, {w, h},
 						SPRITE_CIRCLE_ON, SPRITE_CIRCLE_OFF, texture_manager);
+
+	x = win_size.x * 0.65;
+	y = win_size.y * 0.67;
+	w = 40;
+	h = 40;
+	this->learn_toggle = ToggleButton(x, y, w, h, SPRITE_VALID_CHECK, SPRITE_EMPTY_CHECK, texture_manager);
+	this->learn_toggle.setToggled(this->settings.learn);
+
+
+	x = win_size.x * 0.85;
+	w = 40;
+	h = 40;
+	this->step_toggle = ToggleButton(x, y, w, h, SPRITE_VALID_CHECK, SPRITE_EMPTY_CHECK, texture_manager);
+	this->step_toggle.setToggled(this->settings.step_mode);
 }
 
 
@@ -89,6 +103,17 @@ void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	drawText(window, text, "Number of sessions", pos, 30, sf::Text::Regular, sf::Color::White);
 	this->sessions_slider.draw(window, text, texture_manager);
 
+	pos.x = win_size.x * 0.65;
+	pos.y = win_size.y * 0.57;
+	drawText(window, text, "AI learn", pos, 30, sf::Text::Regular, sf::Color::White);
+	this->learn_toggle.draw(window, texture_manager);
+
+	pos.x = win_size.x * 0.85;
+	pos.y = win_size.y * 0.57;
+	drawText(window, text, "Step-by-step", pos, 30, sf::Text::Regular, sf::Color::White);
+	this->step_toggle.draw(window, texture_manager);
+
+	pos.x = win_size.x * 3/4;
 	pos.y = win_size.y * 0.8;
 	drawText(window, text, "Min time per AI move", pos, 30, sf::Text::Regular, sf::Color::White);
 	this->move_time_slider.draw(window, text, texture_manager);
@@ -105,7 +130,10 @@ void	Menu::tick(Environment &env, Mouse &mouse, sf::RenderWindow &window)
 	this->size_slider.tick(mouse, window);
 	this->sessions_slider.tick(mouse, window);
 	this->move_time_slider.tick(mouse, window);
+	this->learn_toggle.tick(mouse);
+	this->step_toggle.tick(mouse);
 
+	this->saveSettings();
 	if (this->quit_button.getPressed())
 		env.close();
 	else if (this->play_button.getPressed())
@@ -116,4 +144,14 @@ void	Menu::tick(Environment &env, Mouse &mouse, sf::RenderWindow &window)
 	{
 		std::cout << "AI" << std::endl;
 	}
+}
+
+
+void	Menu::saveSettings()
+{
+	this->settings.size = this->size_slider.getValue();
+	this->settings.sessions = this->sessions_slider.getValue();
+	this->settings.learn = this->learn_toggle.isToggled();
+	this->settings.step_mode = this->step_toggle.isToggled();
+	this->settings.move_time = this->move_time_slider.getValue();
 }
