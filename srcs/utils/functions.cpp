@@ -1,5 +1,5 @@
-# include "functions.hpp"
-
+#include <utils/functions.hpp>
+#include <cmath>
 
 void	drawText(sf::RenderWindow &window, sf::Text &text, std::string str,
 					int x, int y, int fontSize, sf::Text::Style style, sf::Color color)
@@ -38,4 +38,19 @@ void	drawText(sf::RenderWindow &window, sf::Text &text, std::string str,
 
 	text.setFillColor(color);
 	window.draw(text);
+}
+
+
+bool	isInt(float x)
+{
+	return (x == std::trunc(x));
+}
+
+
+std::string	formatFloat(float x)
+{
+	std::ostringstream oss;
+	oss << std::fixed << std::setprecision(2) << x;
+	std::string s = oss.str();
+	return s;
 }

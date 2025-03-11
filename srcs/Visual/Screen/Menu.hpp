@@ -11,10 +11,10 @@ class Environment;
 struct s_settings
 {
 	int		size = 10;
-	int		sessions = 0;
+	int		sessions = 10;
 	bool	learn = true;
 	bool	step_mode = false;
-	float	move_time = 0;
+	float	move_time = 0.5;
 };
 
 
@@ -34,11 +34,9 @@ class Menu
 	private:
 		s_settings	settings;
 		Button		play_button, AI_button, quit_button;
-		Slider		size_slider;
-		//session selector
+		Slider		size_slider, sessions_slider, move_time_slider;
 		//learn toggle (default true)
 		//stepmode toggle
-		//time per move if no step (slider / selector)
 };
 
 

@@ -12,7 +12,7 @@ Slider::Slider()
 }
 
 
-Slider::Slider(int min, int max, int value, sf::Vector2i pos, sf::Vector2i size,
+Slider::Slider(float min, float max, float value, std::string type, sf::Vector2i pos, sf::Vector2i size,
 				sprite_name onSprite, sprite_name offSprite, TextureManager &texture_manager)
 {
 	this->min = min;
@@ -20,6 +20,7 @@ Slider::Slider(int min, int max, int value, sf::Vector2i pos, sf::Vector2i size,
 	this->value = value;
 	this->pos = pos;
 	this->size = size;
+	this->type = type;
 
 	float range = max - min;
 	float val_perc = (value - min) / range;
@@ -66,17 +67,18 @@ Slider	&Slider::operator=(const Slider &other)
 	this->size = other.size;
 	this->button = other.button;
 	this->back_line = other.back_line;
+	this->type = other.type;
 
 	return *this;
 }
 
-int	Slider::getValue() const
+float	Slider::getValue() const
 {
 	return this->value;
 }
 
 
-void	Slider::setValue(int value)
+void	Slider::setValue(float value)
 {
 	this->value = value;
 }
@@ -96,12 +98,14 @@ void	Slider::tick(Mouse &mouse, sf::RenderWindow &window)
 	{
 		mouse.updatePosition(window);
 		this->moveSelector(mouse.getX(), this->pos.y);
+		float range = this->max - this->min;
+		float relative_pos = this->button.getPos().x - (this->pos.x - this->size.x / 2);
+		float val_perc = relative_pos / this->size.x;
+		if (this->type == "int")
+			this->value = std::round(val_perc * range + this->min);
+		else
+			this->value = val_perc * range + this->min;
 	}
-
-	float range = this->max - this->min;
-	float relative_pos = this->button.getPos().x - (this->pos.x - this->size.x / 2);
-	float val_perc = relative_pos / this->size.x;
-	this->value = std::round(val_perc * range + this->min);
 }
 
 
@@ -110,17 +114,24 @@ void	Slider::draw(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	this->back_line.draw(window);
 	this->button.draw(window, text, textureManager);
 
-	sf::Vector2f txt_pos(this->pos.x - (this->size.x / 2) - 20, this->pos.y - 2);
+	int dist = (this->min < 100 ? 20 : (this->min < 1000 ? 25 : 30));
+	sf::Vector2f txt_pos(this->pos.x - (this->size.x / 2) - dist, this->pos.y - 2);
+	std::string	value_txt[3];
+	value_txt[0] = (isInt(this->min) ? std::to_string(static_cast<int>(this->min)) : formatFloat(this->min));
+	value_txt[1] = (isInt(this->max) ? std::to_string(static_cast<int>(this->max)) : formatFloat(this->max));
+	value_txt[2] = (isInt(this->value) ? std::to_string(static_cast<int>(this->value)) : formatFloat(this->value));
 
-	drawText(window, text, std::to_string(this->min), txt_pos, 20, sf::Text::Regular, sf::Color::White);
+	drawText(window, text, value_txt[0], txt_pos, 20, sf::Text::Regular, sf::Color::White);
 
-	txt_pos.x = this->pos.x + this->size.x / 2 + 20;
+	dist = (this->max < 100 ? 20 : (this->max < 1000 ? 25 : 30));
+	txt_pos.x = this->pos.x + this->size.x / 2 + dist;
 
-	drawText(window, text, std::to_string(this->max), txt_pos, 20, sf::Text::Regular, sf::Color::White);
+	drawText(window, text, value_txt[1], txt_pos, 20, sf::Text::Regular, sf::Color::White);
 
 	txt_pos.x = this->button.getPos().x;
-	txt_pos.y -= 30;
-	drawText(window, text, std::to_string(this->value), txt_pos, 20, sf::Text::Regular, sf::Color::White);
+	txt_pos.y -= this->size.y * 3;
+
+	drawText(window, text, value_txt[2], txt_pos, 20, sf::Text::Regular, sf::Color::White);
 }
 
 

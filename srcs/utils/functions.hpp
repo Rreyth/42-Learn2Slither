@@ -11,4 +11,11 @@ void	drawText(sf::RenderWindow &window, sf::Text &text, std::string str,
 void	drawText(sf::RenderWindow &window, sf::Text &text, std::string str,
 					sf::Vector2f pos, int fontSize, sf::Text::Style style, sf::Color color);
 
+
+bool	isInt(float x);
+
+
+std::string	formatFloat(float x);
+
+
 #endif //FUNCTIONS_HPP

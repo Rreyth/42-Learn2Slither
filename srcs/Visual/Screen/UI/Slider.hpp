@@ -24,12 +24,12 @@ class Slider
 {
 	public:
 		Slider();
-		Slider(int min, int max, int value, sf::Vector2i pos, sf::Vector2i size,
+		Slider(float min, float max, float value, std::string type, sf::Vector2i pos, sf::Vector2i size,
 			   sprite_name onSprite, sprite_name offSprite, TextureManager &texture_manager);
 		~Slider();
 
-		int		getValue() const;
-		void	setValue(int value);
+		float	getValue() const;
+		void	setValue(float value);
 		void	tick(Mouse &mouse, sf::RenderWindow &window);
 		void	draw(sf::RenderWindow &window, sf::Text &text, TextureManager &textureManager);
 
@@ -39,7 +39,8 @@ class Slider
 		sf::Vector2i	pos, size;
 		rounded_rect	back_line;
 		Button			button;
-		int				min, max, value;
+		std::string		type;
+		float			min, max, value;
 
 		void			moveSelector(int x, int y);
 
