@@ -1,5 +1,4 @@
-#include "Menu.hpp"
-
+#include <Visual/Screen/Menu.hpp>
 #include <utils/functions.hpp>
 #include <Environment/Environment.hpp>
 
@@ -10,11 +9,13 @@ Menu::Menu(const flags &launch_flags)
 					launch_flags.sessions,
 					!launch_flags.dontlearn,
 					launch_flags.stepmode,
+					false,
+					false,
 					0.5};
 }
 
 
- Menu::~Menu()
+Menu::~Menu()
 {
 }
 
@@ -83,7 +84,6 @@ void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &texture_manager)
 {
 	sf::Vector2f win_size(window.getSize());
-	//background
 	//title
 	sf::Vector2f pos(win_size.x / 2, win_size.y * 0.1);
 	drawText(window, text, "Learn2Slither", pos, 50, sf::Text::Bold, sf::Color::White);
@@ -138,11 +138,12 @@ void	Menu::tick(Environment &env, Mouse &mouse, sf::RenderWindow &window)
 		env.close();
 	else if (this->play_button.getPressed())
 	{
-		std::cout << "play" << std::endl;
+		this->settings.start = true;
 	}
 	else if (this->AI_button.getPressed())
 	{
-		std::cout << "AI" << std::endl;
+		this->settings.start = true;
+		this->settings.AI_play = true;
 	}
 }
 

@@ -15,6 +15,8 @@ struct s_settings
 	int		sessions = 10;
 	bool	learn = true;
 	bool	step_mode = false;
+	bool	start = false;
+	bool	AI_play = false;
 	float	move_time = 0.5;
 };
 

@@ -41,6 +41,7 @@ class Grid
 		void					playerShrink();
 		int						getPlayerLen() const;
 		void					reset();
+		void					start(int size);
 
 	private:
 		std::vector<s_apple>	apples;

@@ -71,7 +71,7 @@ void Environment::render()
 {
 	if (!this->visual) //TODO
 		std::cout << "WIP -> PRINT TRAINING INFOS" << std::endl;
-	else
+	else //TODO : add actual size
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
 			this->nb_move, this->max_size, this->last_reward);
 }
@@ -155,7 +155,21 @@ void Environment::reset()
 }
 
 
-// # print if no visual
+void	Environment::startGame(s_settings settings)
+{
+	this->reset();
+	this->input_manager.resetMouse();
+	this->grid.start(settings.size);
+	// TODO: use all settings
+}
+
+
+void	Environment::changeWin()
+{
+	this->input_manager.resetMouse();
+}
+
+//TODO # print if no visual
 // # load msg
 // # Training...
 // # Session X / nb session (rewrite each loop)

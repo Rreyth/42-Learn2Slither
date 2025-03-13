@@ -298,3 +298,11 @@ void	Grid::reset() //TODO: RM ?
 	this->initApples();
 	this->closer = false;
 }
+
+void	Grid::start(int size)
+{
+	this->size = size + 2;
+	this->initPlayer();
+	this->initApples();
+	this->closer = false;
+}

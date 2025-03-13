@@ -12,11 +12,14 @@ class Environment
 	public:
 		Environment(flags &launch_flags);
 		~Environment();
+
 		void	run();
 		void	setMove(bool moved);
 		void	close();
 		void	reset();
 		Grid	&getGrid();
+		void	startGame(s_settings settings);
+		void	changeWin();
 
 	private:
 		// agent class

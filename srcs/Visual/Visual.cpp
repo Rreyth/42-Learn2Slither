@@ -3,10 +3,7 @@
 
 Visual::Visual(flags &launch_flags) : text(this->font, "", 35), menu(launch_flags)
 {
-	this->tiles_nb = launch_flags.size + 2;
-	// sf::Vector2u win_size(this->tiles_nb * TILE_SIZE * 2, this->tiles_nb * TILE_SIZE);
 	sf::Vector2u win_size(854, 480);
-	this->grid_pos = sf::Vector2i(win_size.x * 0.5 - win_size.y, win_size.y * 0.5 - this->tiles_nb * 0.5 * TILE_SIZE);
 
 	this->window = sf::RenderWindow(sf::VideoMode({win_size.x, win_size.y}), "I'M A SNAKE!", sf::Style::Close);
 	this->window.setFramerateLimit(MAX_FPS);
@@ -26,6 +23,7 @@ Visual::Visual(flags &launch_flags) : text(this->font, "", 35), menu(launch_flag
 	}
 	catch (const std::exception &e)
 	{
+		std::cerr << e.what() << std::endl;
 		window.close();
 		exit(EXIT_FAILURE);
 	}
@@ -51,113 +49,24 @@ gameState	&Visual::getState()
 	return (this->state);
 }
 
-// void	Visual::drawGrid()
-// {
-// 	sf::RectangleShape	rect(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-//
-// 	rect.setOutlineColor(sf::Color(180, 180, 180));
-//
-// 	for (int i = 0; i < this->tiles_nb; i++)
-// 	{
-// 		for (int j = 0; j < this->tiles_nb; j++)
-// 		{
-// 			if (i == this->tiles_nb - 1 || j == this->tiles_nb - 1
-// 				|| i == 0 || j == 0)
-// 			{
-// 				rect.setFillColor(sf::Color(90, 90, 90));
-// 				rect.setOutlineThickness(0);
-// 			}
-// 			else
-// 			{
-// 				rect.setFillColor(sf::Color::Transparent);
-// 				rect.setOutlineThickness(-2);
-// 			}
-// 			rect.setPosition(sf::Vector2f(this->grid_pos.x + TILE_SIZE * i,
-// 				this->grid_pos.y + TILE_SIZE * j));
-// 			this->window.draw(rect);
-// 		}
-// 	}
-// }
-//
-//
-// void	Visual::drawElements(s_player &player, std::vector<s_apple> &apples)
-// {
-// 	sf::RectangleShape	rect(sf::Vector2f(TILE_SIZE - 4, TILE_SIZE - 4));
-//
-// 	// Draw player head
-// 	rect.setFillColor(sf::Color(24, 135, 191));
-// 	rect.setPosition(sf::Vector2f(this->grid_pos.x + player.head_pos.x * TILE_SIZE + 2,
-// 		this->grid_pos.y + player.head_pos.y * TILE_SIZE + 2));
-// 	this->window.draw(rect);
-//
-// 	// Draw player body parts
-// 	rect.setFillColor(sf::Color(10, 87, 126));
-// 	for (const sf::Vector2i body : player.body_pos)
-// 	{
-// 		rect.setPosition(sf::Vector2f(this->grid_pos.x + body.x * TILE_SIZE + 2,
-// 			this->grid_pos.y + body.y * TILE_SIZE + 2));
-// 		this->window.draw(rect);
-// 	}
-//
-// 	// Draw apples
-// 	for (auto [bonus, pos] : apples)
-// 	{
-// 		if (bonus)
-// 			rect.setFillColor(sf::Color::Green);
-// 		else
-// 			rect.setFillColor(sf::Color::Red);
-// 		rect.setPosition(sf::Vector2f(this->grid_pos.x + pos.x * TILE_SIZE + 2,
-// 			this->grid_pos.y + pos.y * TILE_SIZE + 2));
-// 		this->window.draw(rect);
-// 	}
-// }
-//
-//
-// void	Visual::displayInfos(int nb_moves, int max_size, int reward)
-// {
-// 	float			y_mult, y_init;
-// 	sf::Vector2f	pos;
-// 	std::string		all_str[] = {"Nb moves:", std::to_string(nb_moves),
-// 							"Max size:", std::to_string(max_size),
-// 							"Last reward:", std::to_string(reward)};
-//
-// 	pos.x = this->window.getSize().x * 3 / 4;
-// 	y_init = this->window.getSize().y;
-// 	y_mult = 0.1;
-//
-// 	for (std::string str : all_str)
-// 	{
-// 		pos.y = y_init * y_mult;
-// 		drawText(this->window, this->text, str, pos, 35,
-// 				sf::Text::Bold, sf::Color::White);
-// 		y_mult += 0.15;
-// 	}
-// }
-
 
 void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 						int nb_moves, int max_size, int reward)
 {
-	//TODO : replace rect with sprites
 	this->window.clear();
 
-	//TODO : screen display depending on state
 	switch (this->state)
 	{
 		case MENU:
 			this->menu.render(this->window, this->text, this->texture_manager);
 			break;
 		case GAME:
+			this->game_screen.render(this->window, this->text, this->texture_manager,
+									player, apples, nb_moves, max_size, reward);
 			break;
 		case GAMEOVER:
 			break;
 	}
-	// // left side
-	// this->drawGrid();
-	// this->drawElements(player, apples);
-	//
-	// // right side
-	// this->displayInfos(nb_moves, max_size, reward);
 
 	this->window.display();
 }
@@ -165,16 +74,47 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 
 void	Visual::tick(Environment &env, Mouse &mouse)
 {
+	s_settings	settings;
 	switch (this->state)
 	{
 		case MENU:
 			this->menu.tick(env, mouse, this->window);
+			settings = this->menu.getSettings();
+			if (settings.start)
+			{
+				this->state = GAME;
+
+				this->game_screen.visualInit(this->window, this->texture_manager,
+											settings.size + 2);
+				env.startGame(settings);
+			}
+			//TODO: add ai play
 			break;
 		case GAME:
-			// this->menu.tick(delta, mouse);
+			this->game_screen.tick(mouse);
+			if (this->game_screen.BackToMenu())
+			{
+				this->state = MENU;
+				this->menu.getSettings().start = false;
+				this->resetWindow();
+				env.changeWin();
+			}
 			break;
 		case GAMEOVER:
 			// this->menu.tick(delta, mouse);
 			break;
 	}
+}
+
+
+void	Visual::resetWindow()
+{
+	sf::Vector2u win_size(854, 480);
+
+	window.create(sf::VideoMode({win_size.x, win_size.y}), "I'M A SNAKE!", sf::Style::Close);
+	window.setFramerateLimit(MAX_FPS);
+	sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+	sf::Vector2i windowPosition((desktop.size.x - win_size.x) / 2, (desktop.size.y - win_size.y) / 2);
+	window.setPosition(windowPosition);
+	window.setKeyRepeatEnabled(false);
 }

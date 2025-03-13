@@ -17,15 +17,20 @@ BUILD				:= build
 
 #====================================TARGETS===================================#
 SRCS				:=	srcs/main.cpp \
+						\
 						srcs/utils/Mouse.cpp\
 						srcs/utils/parser.cpp \
 						srcs/utils/functions.cpp \
 						srcs/utils/TextureManager.cpp \
+						\
 						srcs/Visual/Visual.cpp \
 						srcs/Visual/Screen/Menu.cpp \
+						srcs/Visual/Screen/GameScreen.cpp \
+						\
 						srcs/Visual/Screen/UI/Slider.cpp\
 						srcs/Visual/Screen/UI/Button.cpp\
 						srcs/Visual/Screen/UI/ToggleButton.cpp\
+						\
 						srcs/Environment/Grid.cpp \
 						srcs/Environment/Environment.cpp \
 						srcs/Environment/InputManager.cpp \

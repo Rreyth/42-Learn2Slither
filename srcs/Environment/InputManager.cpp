@@ -1,8 +1,6 @@
 #include <Environment/InputManager.hpp>
 #include <Environment/Environment.hpp>
 
-#include <iostream>
-
 
 InputManager::InputManager()
 {
@@ -87,4 +85,10 @@ void	InputManager::manageInput(Environment &env, Visual &visual)
 Mouse	&InputManager::getMouse()
 {
 	return this->mouse;
+}
+
+
+void InputManager::resetMouse()
+{
+	this->mouse.updateMbutton(MBUT_LEFT, false);
 }

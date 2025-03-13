@@ -17,6 +17,7 @@ class InputManager
 
 		void	manageInput(Environment &env, Visual &visual);
 		Mouse	&getMouse();
+		void	resetMouse();
 
 	private:
 		Mouse	mouse;
