@@ -22,7 +22,8 @@ class Visual
 		sf::RenderWindow	&getWin();
 		gameState			&getState();
 		void				render(s_player &player, std::vector<s_apple> &apples,
-									int nb_moves, int max_size, int reward);
+									int nb_moves, int current_size, int max_size,
+									int reward);
 		void				tick(Environment &env, Mouse &mouse);
 
 	private:

@@ -86,7 +86,7 @@ void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	sf::Vector2f win_size(window.getSize());
 
 	//background
-	this->drawBackground(window, texture_manager);
+	drawBackground(window, texture_manager);
 
 	//title
 	sf::Vector2f pos(win_size.x / 2, win_size.y * 0.1);
@@ -158,36 +158,4 @@ void	Menu::saveSettings()
 	this->settings.learn = this->learn_toggle.isToggled();
 	this->settings.step_mode = this->step_toggle.isToggled();
 	this->settings.move_time = this->move_time_slider.getValue();
-}
-
-
-void	Menu::drawBackground(sf::RenderWindow &window, TextureManager &texture_manager)
-{
-	sf::Vector2f win_size(window.getSize());
-	for (int y = 16; y < win_size.y; y+=32)
-	{
-		for (int x = 16; x < win_size.x; x+=32)
-		{
-			if (x == 16 || x == win_size.x - 16
-				|| y == 16 || y == win_size.y - 16)
-				texture_manager.drawTexture(window, SPRITE_WALL, sf::Vector2f(x, y));
-			else
-			{
-				texture_manager.drawTexture(window, SPRITE_GROUND, sf::Vector2f(x, y));
-			}
-			if (y == 48 && (x == 48 || x == win_size.x - 48))
-				texture_manager.drawTexture(window, SPRITE_GREEN_APPLE, sf::Vector2f(x, y));
-			else if (y == win_size.y - 48 && (x == 48 || x == win_size.x - 48))
-				texture_manager.drawTexture(window, SPRITE_RED_APPLE, sf::Vector2f(x, y));
-		}
-		if (y >= win_size.y * 0.2 && y <= win_size.y * 0.85)
-		{
-			if (y <= win_size.y * 0.25)
-				texture_manager.drawTexture(window, SPRITE_SNAKE_HEAD, sf::Vector2f(win_size.x / 2, y));
-			else if (y >= win_size.y * 0.8)
-				texture_manager.drawTexture(window, SPRITE_SNAKE_TAIL, sf::Vector2f(win_size.x / 2, y));
-			else
-				texture_manager.drawTexture(window, SPRITE_SNAKE_BODY, sf::Vector2f(win_size.x / 2, y));
-		}
-	}
 }

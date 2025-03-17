@@ -51,7 +51,7 @@ gameState	&Visual::getState()
 
 
 void	Visual::render(s_player &player, std::vector<s_apple> &apples,
-						int nb_moves, int max_size, int reward)
+						int nb_moves, int current_size, int max_size, int reward)
 {
 	this->window.clear();
 
@@ -62,7 +62,8 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 			break;
 		case GAME:
 			this->game_screen.render(this->window, this->text, this->texture_manager,
-									player, apples, nb_moves, max_size, reward);
+									player, apples, nb_moves, current_size,
+									max_size, reward);
 			break;
 		case GAMEOVER:
 			break;

@@ -69,17 +69,30 @@ void	GameScreen::tick(Mouse &mouse)
 
 void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 							TextureManager &texture_manager, s_player &player,
-							std::vector<s_apple> &apples, int nb_moves, int max_size,
-							int reward)
+							std::vector<s_apple> &apples, int nb_moves,
+							int current_size, int max_size, int reward)
 {
+	// background
+	this->gameBackground(window, texture_manager);
+
 	// left side
 	this->drawGrid(window, texture_manager);
 	this->drawElements(window, texture_manager, player, apples);
 
 	// right side
-	// this->displayInfos(window, text, nb_moves, max_size, reward);
+	this->displayInfos(window, text, nb_moves, current_size, max_size, reward);
 
 	this->back_button.draw(window, text, texture_manager);
+}
+
+
+void	GameScreen::gameBackground(sf::RenderWindow &window, TextureManager &texture_manager)
+{
+	drawBackground(window, texture_manager);
+	sf::RectangleShape darkLayer(sf::Vector2f(window.getSize()));
+	darkLayer.setFillColor(sf::Color(0, 0, 0, 200));
+
+	window.draw(darkLayer);
 }
 
 
@@ -162,11 +175,12 @@ void	GameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_
 
 
 void	GameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
-								int nb_moves, int max_size, int reward)
+								int nb_moves,int current_size, int max_size, int reward)
 {
 	float			y_mult, y_init;
 	sf::Vector2f	pos;
 	std::string		all_str[] = {"Nb moves:", std::to_string(nb_moves),
+							"Current size:", std::to_string(current_size),
 							"Max size:", std::to_string(max_size),
 							"Last reward:", std::to_string(reward)};
 
@@ -177,9 +191,9 @@ void	GameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
 	for (std::string str : all_str)
 	{
 		pos.y = y_init * y_mult;
-		drawText(window, text, str, pos, 35,
+		drawText(window, text, str, pos, y_init * 0.05,
 				sf::Text::Bold, sf::Color::White);
-		y_mult += 0.15;
+		y_mult += 0.1;
 	}
 }
 

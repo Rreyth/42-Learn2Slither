@@ -25,8 +25,8 @@ class GameScreen
 		void	tick(Mouse &mouse);
 		void	render(sf::RenderWindow &window, sf::Text &text,
 						TextureManager &texture_manager, s_player &player,
-						std::vector<s_apple> &apples, int nb_moves, int max_size,
-						int reward);
+						std::vector<s_apple> &apples, int nb_moves,
+						int current_size, int max_size, int reward);
 
 	private:
 		sf::Vector2i	grid_pos;
@@ -34,11 +34,13 @@ class GameScreen
 		bool			back;
 		int				tiles_nb;
 
+		void			gameBackground(sf::RenderWindow &window, TextureManager &texture_manager);
 		void			drawGrid(sf::RenderWindow &window, TextureManager &texture_manager);
 		void			drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
 									s_player &player, std::vector<s_apple> &apples);
 		void			displayInfos(sf::RenderWindow &window, sf::Text &text,
-									int nb_moves, int max_size, int reward);
+									int nb_moves,int current_size, int max_size,
+									int reward);
 		bool			isAngle(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos);
 		player_dir		getAngleDir(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos);
 };

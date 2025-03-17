@@ -54,3 +54,41 @@ std::string	formatFloat(float x)
 	std::string s = oss.str();
 	return s;
 }
+
+void	drawBackground(sf::RenderWindow &window, TextureManager &texture_manager)
+{
+	sf::Vector2f win_size(window.getSize());
+	bool	head = false, tail = false;
+	for (int y = 16; y < win_size.y; y+=32)
+	{
+		for (int x = 16; x < win_size.x; x+=32)
+		{
+			if (x == 16 || x == win_size.x - 16
+				|| y == 16 || y == win_size.y - 16)
+				texture_manager.drawTexture(window, SPRITE_WALL, sf::Vector2f(x, y));
+			else
+			{
+				texture_manager.drawTexture(window, SPRITE_GROUND, sf::Vector2f(x, y));
+			}
+			if (y == 48 && (x == 48 || x == win_size.x - 48))
+				texture_manager.drawTexture(window, SPRITE_GREEN_APPLE, sf::Vector2f(x, y));
+			else if (y == win_size.y - 48 && (x == 48 || x == win_size.x - 48))
+				texture_manager.drawTexture(window, SPRITE_RED_APPLE, sf::Vector2f(x, y));
+		}
+		if (y >= win_size.y * 0.2 && y <= win_size.y * 0.85 && !tail)
+		{
+			if (y <= win_size.y * 0.25 && !head)
+			{
+				texture_manager.drawTexture(window, SPRITE_SNAKE_HEAD, sf::Vector2f(win_size.x / 2, y));
+				head = true;
+			}
+			else if (y >= win_size.y * 0.8)
+			{
+				texture_manager.drawTexture(window, SPRITE_SNAKE_TAIL, sf::Vector2f(win_size.x / 2, y));
+				tail = true;
+			}
+			else
+				texture_manager.drawTexture(window, SPRITE_SNAKE_BODY, sf::Vector2f(win_size.x / 2, y));
+		}
+	}
+}

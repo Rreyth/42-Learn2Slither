@@ -41,8 +41,6 @@ class Menu
 		ToggleButton	learn_toggle, step_toggle;
 
 		void			saveSettings();
-		void			drawBackground(sf::RenderWindow &window,
-								TextureManager &texture_manager);
 };
 
 

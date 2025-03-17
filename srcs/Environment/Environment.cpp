@@ -13,6 +13,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size)
 	this->running = true;
 	this->move = false;
 	this->nb_move = 0;
+	this->current_size = 3;
 	this->max_size = 3;
 	this->last_reward = 0;
 }
@@ -71,9 +72,9 @@ void Environment::render()
 {
 	if (!this->visual) //TODO
 		std::cout << "WIP -> PRINT TRAINING INFOS" << std::endl;
-	else //TODO : add actual size
+	else
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
-			this->nb_move, this->max_size, this->last_reward);
+			this->nb_move, this->current_size, this->max_size, this->last_reward);
 }
 
 
@@ -112,6 +113,7 @@ int Environment::checkMove()
 			this->reset();
 			return -100;
 		}
+		this->current_size = current_len + 1;
 		if (current_len + 1 > this->max_size)
 			this->max_size = current_len + 1;
 		this->grid.moveApple(apple);
