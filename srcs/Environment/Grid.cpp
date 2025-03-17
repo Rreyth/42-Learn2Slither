@@ -74,16 +74,19 @@ void	Grid::initPlayer()
 
 	this->player.dir = static_cast<player_dir>(dir_dist(gen));
 
-	this->player.body_pos.clear();
+	this->player.body_parts.clear();
 	while (!hasEnoughSpace(this->player.head_pos, this->player.dir, this->size))
 		this->player.dir = static_cast<player_dir>(dir_dist(gen));
 
-	sf::Vector2i	body1, body2;
+	sf::Vector2i	pos1, pos2;
 
-	body1 = positionBody(this->player.head_pos, this->player.dir);
-	body2 = positionBody(body1, this->player.dir);
+	pos1 = positionBody(this->player.head_pos, this->player.dir);
+	pos2 = positionBody(pos1, this->player.dir);
 
-	this->player.body_pos.insert(this->player.body_pos.end(), {body1, body2});
+	s_body body1 = {pos1, this->player.dir};
+	s_body body2 = {pos2, this->player.dir};
+
+	this->player.body_parts.insert(this->player.body_parts.end(), {body1, body2});
 }
 
 
@@ -92,9 +95,9 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 	if (pos == this->player.head_pos)
 		return true;
 
-	for (const sf::Vector2i &body : this->player.body_pos)
+	for (const s_body body : this->player.body_parts)
 	{
-		if (pos == body)
+		if (pos == body.pos)
 			return true;
 	}
 	return false;
@@ -103,9 +106,9 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 
 bool	Grid::occupiedByBody(const sf::Vector2i &pos)
 {
-	for (const sf::Vector2i &body : this->player.body_pos)
+	for (const s_body body : this->player.body_parts)
 	{
-		if (pos == body)
+		if (pos == body.pos)
 			return true;
 	}
 	return false;
@@ -166,9 +169,10 @@ bool	Grid::occupiedByApples(const sf::Vector2i &pos)
 void	Grid::movePlayer(const player_dir &dir)
 {
 	// move head
-	sf::Vector2i old_pos, tmp;
-	old_pos = this->player.head_pos;
-	this->closer = this->moveInBonusDir(old_pos, dir);
+	s_body	old_pos, tmp;
+	old_pos.pos = this->player.head_pos;
+	old_pos.dir = this->player.dir;
+	this->closer = this->moveInBonusDir(old_pos.pos, dir);
 	switch (dir)
 	{
 		case UP:
@@ -183,15 +187,22 @@ void	Grid::movePlayer(const player_dir &dir)
 		case RIGHT:
 			this->player.head_pos.x++;
 	}
-
+	this->player.dir = dir;
 	// move body parts
-	for (sf::Vector2i &body : this->player.body_pos)
+	int i = 0;
+	while (i < this->player.body_parts.size())
 	{
-		tmp = body;
-		body = old_pos;
+		tmp = this->player.body_parts[i];
+		this->player.body_parts[i] = old_pos;
 		old_pos = tmp;
+		i++;
 	}
-	this->next_body_pos = old_pos;
+	if (this->player.body_parts.size() > 1)
+		this->player.body_parts.back().dir = this->player.body_parts[i - 2].dir;
+	else
+		this->player.body_parts.back().dir = this->player.dir;
+
+	this->next_body_part = old_pos;
 }
 
 
@@ -276,19 +287,25 @@ bool	Grid::isCloserMove() const
 
 void	Grid::playerGrow()
 {
-	this->player.body_pos.push_back(this->next_body_pos);
+	this->player.body_parts.push_back(this->next_body_part);
 }
 
 
 void	Grid::playerShrink()
 {
-	this->player.body_pos.pop_back();
+	this->player.body_parts.pop_back();
+
+	int size = this->player.body_parts.size();
+	if (size > 1)
+		this->player.body_parts.back().dir = this->player.body_parts[size - 2].dir;
+	else
+		this->player.body_parts.back().dir = this->player.dir;
 }
 
 
 int Grid::getPlayerLen() const
 {
-	return this->player.body_pos.size();
+	return this->player.body_parts.size();
 }
 
 

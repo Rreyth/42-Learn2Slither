@@ -114,12 +114,12 @@ void Button::draw(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	if (!this->mouseOver)
 	{
 		textureManager.scaleSprite(this->offSprite, this->scaleOff);
-		textureManager.drawTexture(window, this->offSprite, this->x, this->y);
+		textureManager.drawTexture(window, this->offSprite, sf::Vector2f(this->x, this->y));
 	}
 	else
 	{
 		textureManager.scaleSprite(this->onSprite, this->scaleOn);
-		textureManager.drawTexture(window, this->onSprite, this->x, this->y);
+		textureManager.drawTexture(window, this->onSprite, sf::Vector2f(this->x, this->y));
 	}
 
 	drawText(window, text, this->text, this->x, this->y,

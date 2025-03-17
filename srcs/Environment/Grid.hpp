@@ -13,11 +13,18 @@ struct s_apple
 };
 
 
+struct s_body
+{
+	sf::Vector2i	pos;
+	player_dir		dir;
+};
+
+
 struct s_player
 {
-	sf::Vector2i				head_pos;
-	std::vector<sf::Vector2i>	body_pos;
-	player_dir					dir;
+	sf::Vector2i		head_pos;
+	std::vector<s_body>	body_parts;
+	player_dir			dir;
 };
 
 
@@ -46,7 +53,7 @@ class Grid
 	private:
 		std::vector<s_apple>	apples;
 		s_player				player;
-		sf::Vector2i			next_body_pos;
+		s_body					next_body_part;
 		bool					closer;
 		int						size;
 

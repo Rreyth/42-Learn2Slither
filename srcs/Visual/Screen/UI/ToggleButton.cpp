@@ -64,12 +64,12 @@ void ToggleButton::draw(sf::RenderWindow &window, TextureManager &textureManager
 	if (!this->toggled)
 	{
 		textureManager.scaleSprite(this->offSprite, this->scaleOff);
-		textureManager.drawTexture(window, this->offSprite, this->x, this->y);
+		textureManager.drawTexture(window, this->offSprite, sf::Vector2f(this->x, this->y));
 	}
 	else
 	{
 		textureManager.scaleSprite(this->onSprite, this->scaleOn);
-		textureManager.drawTexture(window, this->onSprite, this->x, this->y);
+		textureManager.drawTexture(window, this->onSprite, sf::Vector2f(this->x, this->y));
 	}
 }
 

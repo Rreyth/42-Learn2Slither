@@ -73,8 +73,8 @@ void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 							int reward)
 {
 	// left side
-	this->drawGrid(window);
-	this->drawElements(window, player, apples);
+	this->drawGrid(window, texture_manager);
+	this->drawElements(window, texture_manager, player, apples);
 
 	// right side
 	// this->displayInfos(window, text, nb_moves, max_size, reward);
@@ -83,11 +83,10 @@ void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 }
 
 
-void	GameScreen::drawGrid(sf::RenderWindow &window)
+void	GameScreen::drawGrid(sf::RenderWindow &window, TextureManager &texture_manager)
 {
-	sf::RectangleShape	rect(sf::Vector2f(TILE_SIZE, TILE_SIZE));
-
-	rect.setOutlineColor(sf::Color(180, 180, 180));
+	sprite_name		sprite;
+	sf::Vector2f	pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
 
 	for (int i = 0; i < this->tiles_nb; i++)
 	{
@@ -95,53 +94,69 @@ void	GameScreen::drawGrid(sf::RenderWindow &window)
 		{
 			if (i == this->tiles_nb - 1 || j == this->tiles_nb - 1
 				|| i == 0 || j == 0)
-			{
-				rect.setFillColor(sf::Color(90, 90, 90));
-				rect.setOutlineThickness(-1);
-			}
+				sprite = SPRITE_WALL;
 			else
-			{
-				rect.setFillColor(sf::Color::Transparent);
-				rect.setOutlineThickness(-2);
-			}
-			rect.setPosition(sf::Vector2f(this->grid_pos.x + TILE_SIZE * i,
-				this->grid_pos.y + TILE_SIZE * j));
-			window.draw(rect);
+				sprite = SPRITE_GROUND;
+			texture_manager.drawTexture(window, sprite, pos);
+			pos.y += TILE_SIZE;
 		}
+		pos.x += TILE_SIZE;
+		pos.y = this->grid_pos.y + 16;
 	}
 }
 
 
-void	GameScreen::drawElements(sf::RenderWindow &window, s_player &player,
-								std::vector<s_apple> &apples)
+void	GameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
+								s_player &player, std::vector<s_apple> &apples)
 {
-	sf::RectangleShape	rect(sf::Vector2f(TILE_SIZE - 4, TILE_SIZE - 4));
+	sf::Vector2f	visual_pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
+	const float		angle[] = {0, 180, -90, 90};
 
 	// Draw player head
-	rect.setFillColor(sf::Color(24, 135, 191));
-	rect.setPosition(sf::Vector2f(this->grid_pos.x + player.head_pos.x * TILE_SIZE + 2,
-		this->grid_pos.y + player.head_pos.y * TILE_SIZE + 2));
-	window.draw(rect);
+	visual_pos.x += player.head_pos.x * TILE_SIZE;
+	visual_pos.y += player.head_pos.y * TILE_SIZE;
+	texture_manager.rotateDraw(window, SPRITE_SNAKE_HEAD, visual_pos,
+								sf::degrees(angle[player.dir]));
 
 	// Draw player body parts
-	rect.setFillColor(sf::Color(10, 87, 126));
-	for (const sf::Vector2i body : player.body_pos)
+	for (int i = 0; i < player.body_parts.size(); i++)
 	{
-		rect.setPosition(sf::Vector2f(this->grid_pos.x + body.x * TILE_SIZE + 2,
-			this->grid_pos.y + body.y * TILE_SIZE + 2));
-		window.draw(rect);
+		s_body		&actual = player.body_parts[i];
+		player_dir	dir = actual.dir;
+
+		visual_pos.x = this->grid_pos.x + 16 + actual.pos.x * TILE_SIZE;
+		visual_pos.y = this->grid_pos.y + 16 + actual.pos.y * TILE_SIZE;
+		if (i == player.body_parts.size() - 1)
+			texture_manager.rotateDraw(window, SPRITE_SNAKE_TAIL, visual_pos,
+							sf::degrees(angle[dir]));
+		else
+		{
+			sf::Vector2i next_pos = player.body_parts[i + 1].pos;
+			sf::Vector2i prev_pos = player.head_pos;
+			if (i != 0)
+				prev_pos = player.body_parts[i - 1].pos;
+
+			if (this->isAngle(actual.pos, prev_pos, next_pos))
+			{
+				dir = this->getAngleDir(actual.pos, prev_pos, next_pos);
+				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY_ANGLE, visual_pos,
+								sf::degrees(angle[dir]));
+			}
+			else
+				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY, visual_pos,
+								sf::degrees(angle[dir]));
+		}
 	}
 
 	// Draw apples
 	for (auto [bonus, pos] : apples)
 	{
+		visual_pos.x = this->grid_pos.x + 16 + pos.x * TILE_SIZE;
+		visual_pos.y = this->grid_pos.y + 16 + pos.y * TILE_SIZE;
 		if (bonus)
-			rect.setFillColor(sf::Color::Green);
+			texture_manager.drawTexture(window, SPRITE_GREEN_APPLE, visual_pos);
 		else
-			rect.setFillColor(sf::Color::Red);
-		rect.setPosition(sf::Vector2f(this->grid_pos.x + pos.x * TILE_SIZE + 2,
-			this->grid_pos.y + pos.y * TILE_SIZE + 2));
-		window.draw(rect);
+			texture_manager.drawTexture(window, SPRITE_RED_APPLE, visual_pos);
 	}
 }
 
@@ -166,4 +181,29 @@ void	GameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
 				sf::Text::Bold, sf::Color::White);
 		y_mult += 0.15;
 	}
+}
+
+
+bool	GameScreen::isAngle(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
+{
+	return  !((actual_pos.x == prev_pos.x && actual_pos.x == next_pos.x) ||
+		(actual_pos.y == prev_pos.y && actual_pos.y == next_pos.y));
+}
+
+
+player_dir	GameScreen::getAngleDir(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
+{
+	if ((prev_pos.x == actual_pos.x + 1 && next_pos.y == actual_pos.y - 1) ||
+		(prev_pos.y == actual_pos.y - 1 && next_pos.x == actual_pos.x + 1))
+		return UP;
+
+	if ((prev_pos.x == actual_pos.x - 1 && next_pos.y == actual_pos.y + 1) ||
+		(prev_pos.y == actual_pos.y + 1 && next_pos.x == actual_pos.x - 1))
+		return DOWN;
+
+	if ((prev_pos.x == actual_pos.x - 1 && next_pos.y == actual_pos.y - 1) ||
+		(prev_pos.y == actual_pos.y - 1 && next_pos.x == actual_pos.x - 1))
+		return LEFT;
+
+	return RIGHT;
 }

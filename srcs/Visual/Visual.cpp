@@ -3,7 +3,7 @@
 
 Visual::Visual(flags &launch_flags) : text(this->font, "", 35), menu(launch_flags)
 {
-	sf::Vector2u win_size(854, 480);
+	sf::Vector2u win_size(864, 480);
 
 	this->window = sf::RenderWindow(sf::VideoMode({win_size.x, win_size.y}), "I'M A SNAKE!", sf::Style::Close);
 	this->window.setFramerateLimit(MAX_FPS);
@@ -109,7 +109,7 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 
 void	Visual::resetWindow()
 {
-	sf::Vector2u win_size(854, 480);
+	sf::Vector2u win_size(864, 480);
 
 	window.create(sf::VideoMode({win_size.x, win_size.y}), "I'M A SNAKE!", sf::Style::Close);
 	window.setFramerateLimit(MAX_FPS);

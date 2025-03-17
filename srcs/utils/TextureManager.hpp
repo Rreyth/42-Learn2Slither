@@ -4,7 +4,7 @@
 # include <SFML/Graphics.hpp>
 # include <string>
 
-# define NB_SPRITES 8
+# define NB_SPRITES 16
 
 typedef enum e_sprite_name
 {
@@ -16,6 +16,14 @@ typedef enum e_sprite_name
 	SPRITE_CIRCLE_ON,
 	SPRITE_EMPTY_CHECK,
 	SPRITE_VALID_CHECK,
+	SPRITE_GROUND,
+	SPRITE_WALL,
+	SPRITE_GREEN_APPLE,
+	SPRITE_RED_APPLE,
+	SPRITE_SNAKE_HEAD,
+	SPRITE_SNAKE_BODY,
+	SPRITE_SNAKE_BODY_ANGLE,
+	SPRITE_SNAKE_TAIL,
 }	sprite_name;
 
 class TextureManager
@@ -28,7 +36,8 @@ class TextureManager
 
 		void			loadTextures(void);
 		void			scaleSprite(sprite_name name, sf::Vector2f scale);
-		void			drawTexture(sf::RenderWindow &window, sprite_name name, int x, int y);
+		void			drawTexture(sf::RenderWindow &window, sprite_name name, sf::Vector2f pos);
+		void			rotateDraw(sf::RenderWindow &window, sprite_name name, sf::Vector2f pos, sf::Angle angle);
 
 	private:
 		std::vector<sf::Sprite> sprites;

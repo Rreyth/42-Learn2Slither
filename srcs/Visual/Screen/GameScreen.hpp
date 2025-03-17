@@ -34,11 +34,13 @@ class GameScreen
 		bool			back;
 		int				tiles_nb;
 
-		void			drawGrid(sf::RenderWindow &window);
-		void			drawElements(sf::RenderWindow &window, s_player &player,
-									std::vector<s_apple> &apples);
+		void			drawGrid(sf::RenderWindow &window, TextureManager &texture_manager);
+		void			drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
+									s_player &player, std::vector<s_apple> &apples);
 		void			displayInfos(sf::RenderWindow &window, sf::Text &text,
 									int nb_moves, int max_size, int reward);
+		bool			isAngle(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos);
+		player_dir		getAngleDir(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos);
 };
 
 

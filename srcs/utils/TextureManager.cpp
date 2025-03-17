@@ -1,4 +1,3 @@
-#include <iostream>
 #include <utils/TextureManager.hpp>
 
 #include <stdexcept>
@@ -38,6 +37,14 @@ void	TextureManager::loadTextures(void)
 	this->loadTexture(SPRITE_CIRCLE_ON, "circleOn.png");
 	this->loadTexture(SPRITE_EMPTY_CHECK, "empty_check.png");
 	this->loadTexture(SPRITE_VALID_CHECK, "valid_check.png");
+	this->loadTexture(SPRITE_GROUND, "ground.png");
+	this->loadTexture(SPRITE_WALL, "wall.png");
+	this->loadTexture(SPRITE_GREEN_APPLE, "green_apple.png");
+	this->loadTexture(SPRITE_RED_APPLE, "red_apple.png");
+	this->loadTexture(SPRITE_SNAKE_HEAD, "snake_head.png");
+	this->loadTexture(SPRITE_SNAKE_BODY, "snake_body.png");
+	this->loadTexture(SPRITE_SNAKE_BODY_ANGLE, "snake_body_angle.png");
+	this->loadTexture(SPRITE_SNAKE_TAIL, "snake_tail.png");
 }
 
 
@@ -47,20 +54,23 @@ void TextureManager::scaleSprite(sprite_name name, sf::Vector2f scale)
 }
 
 
-void	TextureManager::drawTexture(sf::RenderWindow &window, sprite_name name, int x, int y)
+void	TextureManager::drawTexture(sf::RenderWindow &window, sprite_name name, sf::Vector2f pos)
 {
-	int w, h;
-
-	sf::Vector2u txt_size = this->textures[name].getSize();
-	sf::Vector2f scale = this->sprites[name].getScale();
-
-	w = txt_size.x * scale.x;
-	h = txt_size.y * scale.y;
-
-	sf::Vector2f pos(x - w / 2, y - h / 2);
 	this->sprites[name].setPosition(pos);
 
 	window.draw(this->sprites[name]);
+}
+
+
+void	TextureManager::rotateDraw(sf::RenderWindow &window, sprite_name name,
+								sf::Vector2f pos, sf::Angle angle)
+{
+	this->sprites[name].rotate(angle);
+
+	this->sprites[name].setPosition(pos);
+
+	window.draw(this->sprites[name]);
+	this->sprites[name].rotate(-angle);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -72,4 +82,6 @@ void	TextureManager::loadTexture(sprite_name name, const std::string &filename)
 	if (!this->textures[name].loadFromFile("data/sprites/" + filename))
 		throw std::invalid_argument("");
 	this->sprites.push_back(sf::Sprite(this->textures[name]));
+	sf::Vector2u size = this->textures[name].getSize();
+	this->sprites.back().setOrigin({size.x / 2.f, size.y / 2.f});
 }
