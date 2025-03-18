@@ -50,8 +50,14 @@ gameState	&Visual::getState()
 }
 
 
+void	Visual::setState(gameState state)
+{
+	this->state = state;
+}
+
+
 void	Visual::render(s_player &player, std::vector<s_apple> &apples,
-						int nb_moves, int current_size, int max_size, int reward)
+						gameInfos &infos)
 {
 	this->window.clear();
 
@@ -62,10 +68,10 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 			break;
 		case GAME:
 			this->game_screen.render(this->window, this->text, this->texture_manager,
-									player, apples, nb_moves, current_size,
-									max_size, reward);
+									player, apples, infos);
 			break;
 		case GAMEOVER:
+			this->game_over_screen.render(this->window, this->text, this->texture_manager);
 			break;
 	}
 
@@ -102,10 +108,27 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 			}
 			break;
 		case GAMEOVER:
-			// this->menu.tick(delta, mouse);
+			this->game_over_screen.tick(mouse);
+			if (this->game_over_screen.backToMenu())
+			{
+				this->state = MENU;
+				this->menu.getSettings().start = false;
+				this->resetWindow();
+				env.changeWin();
+			}
+			else if (this->game_over_screen.getQuit())
+				env.close();
 			break;
 	}
 }
+
+
+void	Visual::gameOverInit(gameInfos &infos)
+{
+	this->game_over_screen.init(infos, this->window, this->texture_manager);
+}
+
+
 
 
 void	Visual::resetWindow()

@@ -12,10 +12,6 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size)
 
 	this->running = true;
 	this->move = false;
-	this->nb_move = 0;
-	this->current_size = 3;
-	this->max_size = 3;
-	this->last_reward = 0;
 }
 
 
@@ -59,7 +55,7 @@ void Environment::tick(float delta)
 	int reward = this->checkMove();
 	if (reward != 0)
 	{
-		this->last_reward = reward;
+		this->infos.last_reward = reward;
 	}
 	if (this->visual)
 	{
@@ -74,7 +70,7 @@ void Environment::render()
 		std::cout << "WIP -> PRINT TRAINING INFOS" << std::endl;
 	else
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
-			this->nb_move, this->current_size, this->max_size, this->last_reward);
+			this->infos);
 }
 
 
@@ -83,7 +79,7 @@ int Environment::checkMove()
 	int reward = -1;
 	if (!this->move)
 		return 0;
-	this->nb_move++;
+	this->infos.nb_moves++;
 	this->move = false;
 	sf::Vector2i pos = this->grid.getPlayer().head_pos;
 
@@ -91,7 +87,13 @@ int Environment::checkMove()
 	{
 		// TODO: death -> if AI -> next session
 		reward = -100;
-		this->reset();
+		if (!this->ai)
+		{
+			this->visual->setState(GAMEOVER);
+			this->visual->gameOverInit(this->infos);
+		}
+		else
+			this->reset();
 	}
 	else if (this->grid.occupiedByApples(pos))
 	{
@@ -110,12 +112,19 @@ int Environment::checkMove()
 		if (current_len == 0)
 		{
 			// TODO: death
-			this->reset();
+			this->infos.current_size = 0;
+			if (!this->ai)
+			{
+				this->visual->setState(GAMEOVER);
+				this->visual->gameOverInit(this->infos);
+			}
+			else
+				this->reset();
 			return -100;
 		}
-		this->current_size = current_len + 1;
-		if (current_len + 1 > this->max_size)
-			this->max_size = current_len + 1;
+		this->infos.current_size = current_len + 1;
+		if (current_len + 1 > this->infos.max_size)
+			this->infos.max_size = current_len + 1;
 		this->grid.moveApple(apple);
 	}
 	else if (this->grid.isCloserMove())
@@ -151,9 +160,7 @@ void Environment::reset()
 {
 	this->running = true;
 	this->grid.reset();
-	this->nb_move = 0;
-	this->max_size = 3;
-	this->last_reward = 0;
+	this->infos = gameInfos();
 }
 
 
@@ -162,6 +169,7 @@ void	Environment::startGame(s_settings settings)
 	this->reset();
 	this->input_manager.resetMouse();
 	this->grid.start(settings.size);
+	this->ai = settings.AI_play;
 	// TODO: use all settings
 }
 

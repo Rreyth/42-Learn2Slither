@@ -69,8 +69,7 @@ void	GameScreen::tick(Mouse &mouse)
 
 void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 							TextureManager &texture_manager, s_player &player,
-							std::vector<s_apple> &apples, int nb_moves,
-							int current_size, int max_size, int reward)
+							std::vector<s_apple> &apples, gameInfos &infos)
 {
 	// background
 	this->gameBackground(window, texture_manager);
@@ -80,7 +79,7 @@ void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 	this->drawElements(window, texture_manager, player, apples);
 
 	// right side
-	this->displayInfos(window, text, nb_moves, current_size, max_size, reward);
+	this->displayInfos(window, text, infos);
 
 	this->back_button.draw(window, text, texture_manager);
 }
@@ -175,14 +174,14 @@ void	GameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_
 
 
 void	GameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
-								int nb_moves,int current_size, int max_size, int reward)
+								gameInfos &infos)
 {
 	float			y_mult, y_init;
 	sf::Vector2f	pos;
-	std::string		all_str[] = {"Nb moves:", std::to_string(nb_moves),
-							"Current size:", std::to_string(current_size),
-							"Max size:", std::to_string(max_size),
-							"Last reward:", std::to_string(reward)};
+	std::string		all_str[] = {"Nb moves:", std::to_string(infos.nb_moves),
+							"Current size:", std::to_string(infos.current_size),
+							"Max size:", std::to_string(infos.max_size),
+							"Last reward:", std::to_string(infos.last_reward)};
 
 	pos.x = window.getSize().x * 3 / 4;
 	y_init = window.getSize().y;

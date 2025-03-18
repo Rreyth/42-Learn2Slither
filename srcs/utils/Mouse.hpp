@@ -2,13 +2,8 @@
 # define MOUSE_HPP
 
 # include <SFML/Graphics.hpp>
+# include <utils/enums.hpp>
 
-typedef enum e_mouse_button
-{
-	MBUT_LEFT,
-	MBUT_MIDDLE,
-	MBUT_RIGHT
-}	mouse_button;
 
 class Mouse
 {

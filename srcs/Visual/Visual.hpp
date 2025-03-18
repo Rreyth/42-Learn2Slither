@@ -1,16 +1,19 @@
 #ifndef VISUAL_HPP
-# define VISUAL_HPP
-
-# include <Environment/Grid.hpp>
-# include <SFML/Graphics.hpp>
-# include <Visual/Screen/Menu.hpp>
-# include <Visual/Screen/GameScreen.hpp>
-# include <utils/TextureManager.hpp>
-# include <utils/enums.hpp>
-# include <utils/functions.hpp>
+#define VISUAL_HPP
 
 
-# define MAX_FPS 1000
+#include <Environment/Grid.hpp>
+#include <SFML/Graphics.hpp>
+#include <Visual/Screen/GameOverScreen.hpp>
+#include <Visual/Screen/GameScreen.hpp>
+#include <Visual/Screen/Menu.hpp>
+#include <utils/TextureManager.hpp>
+#include <utils/enums.hpp>
+#include <utils/functions.hpp>
+#include <utils/structs.hpp>
+
+
+#define MAX_FPS 1000
 
 
 class Visual
@@ -21,10 +24,11 @@ class Visual
 
 		sf::RenderWindow	&getWin();
 		gameState			&getState();
+		void				setState(gameState state);
 		void				render(s_player &player, std::vector<s_apple> &apples,
-									int nb_moves, int current_size, int max_size,
-									int reward);
+									gameInfos &infos);
 		void				tick(Environment &env, Mouse &mouse);
+		void				gameOverInit(gameInfos &infos);
 
 	private:
 		sf::RenderWindow	window;
@@ -33,6 +37,7 @@ class Visual
 		TextureManager		texture_manager;
 		Menu				menu;
 		GameScreen			game_screen;
+		GameOverScreen		game_over_screen;
 		gameState			state;
 
 		void				resetWindow();

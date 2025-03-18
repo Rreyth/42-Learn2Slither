@@ -5,7 +5,7 @@
 #include <Visual/Visual.hpp>
 #include <utils/parser.hpp>
 #include <utils/enums.hpp>
-
+#include <utils/structs.hpp>
 
 class Environment
 {
@@ -28,8 +28,8 @@ class Environment
 		flags			env_flags;
 		Grid			grid;
 		InputManager	input_manager;
-		bool			running, move;
-		int				nb_move, current_size, max_size, last_reward;
+		bool			running, move, ai;
+		gameInfos		infos;
 
 		void	input();
 		void	tick(float delta);

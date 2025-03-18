@@ -4,28 +4,7 @@
 # include <vector>
 # include <SFML/System.hpp>
 # include <utils/enums.hpp>
-
-
-struct s_apple
-{
-	bool			bonus;
-	sf::Vector2i	pos;
-};
-
-
-struct s_body
-{
-	sf::Vector2i	pos;
-	player_dir		dir;
-};
-
-
-struct s_player
-{
-	sf::Vector2i		head_pos;
-	std::vector<s_body>	body_parts;
-	player_dir			dir;
-};
+# include <utils/structs.hpp>
 
 
 class Grid

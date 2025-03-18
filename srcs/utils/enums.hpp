@@ -19,4 +19,12 @@ enum player_dir
 };
 
 
+typedef enum e_mouse_button
+{
+  MBUT_LEFT,
+  MBUT_MIDDLE,
+  MBUT_RIGHT
+}	mouse_button;
+
+
 #endif //ENUMS_HPP
