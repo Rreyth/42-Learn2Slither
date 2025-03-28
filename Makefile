@@ -35,6 +35,8 @@ SRCS				:=	srcs/main.cpp \
 						srcs/Environment/Grid.cpp \
 						srcs/Environment/Environment.cpp \
 						srcs/Environment/InputManager.cpp \
+						\
+						srcs/Agent/Agent.cpp \
 
 OBJS 				:= ${SRCS:srcs/%.cpp=$(BUILD)/%.o}
 DEPS				:= $(SRCS:srcs/%.cpp=$(BUILD)/%.d)

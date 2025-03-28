@@ -1,17 +1,30 @@
 #include <Environment/Environment.hpp>
 #include <iostream>
 
-Environment::Environment(flags &launch_flags) : grid(launch_flags.size)
+Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agent(launch_flags.sessions, !launch_flags.dontlearn)
 {
 	this->env_flags = launch_flags;
 
 	if (launch_flags.visual)
 		this->visual = new Visual(launch_flags);
 
-	// TODO: init agent with sessions and dontlearn
-
 	this->running = true;
 	this->move = false;
+	this->ai_play = false;
+	this->ai_move_time = 0;
+
+	if (launch_flags.load)
+	{
+		try
+		{
+			this->ai_agent.loadQTable(launch_flags.loadfile);
+		}
+		catch (const std::exception &e)
+		{
+			std::cerr << e.what() << std::endl;
+			this->close();
+		}
+	}
 }
 
 
@@ -87,7 +100,7 @@ int Environment::checkMove()
 	{
 		// TODO: death -> if AI -> next session
 		reward = -100;
-		if (!this->ai)
+		if (!this->ai_play)
 		{
 			this->visual->setState(GAMEOVER);
 			this->visual->gameOverInit(this->infos);
@@ -113,7 +126,7 @@ int Environment::checkMove()
 		{
 			// TODO: death
 			this->infos.current_size = 0;
-			if (!this->ai)
+			if (!this->ai_play)
 			{
 				this->visual->setState(GAMEOVER);
 				this->visual->gameOverInit(this->infos);
@@ -153,6 +166,10 @@ void Environment::close()
 		this->visual->getWin().close();
 	}
 	this->running = false;
+	if (this->env_flags.save && (this->ai_play || !this->visual))
+	{
+		this->ai_agent.saveQTable(this->env_flags.savefile);
+	}
 }
 
 
@@ -169,8 +186,16 @@ void	Environment::startGame(s_settings settings)
 	this->reset();
 	this->input_manager.resetMouse();
 	this->grid.start(settings.size);
-	this->ai = settings.AI_play;
-	// TODO: use all settings
+	this->ai_play = settings.AI_play;
+
+	this->env_flags.size = settings.size;
+	this->env_flags.sessions = settings.sessions;
+	this->env_flags.stepmode = settings.step_mode;
+	this->env_flags.dontlearn = !settings.learn;
+	this->ai_move_time = settings.move_time;
+
+	this->ai_agent.setLearn(settings.learn);
+	this->ai_agent.setSessions(settings.sessions);
 }
 
 

@@ -188,6 +188,8 @@ void	Grid::movePlayer(const player_dir &dir)
 			this->player.head_pos.x++;
 	}
 	this->player.dir = dir;
+	if (this->occupiedByBody(this->player.head_pos))
+		return;
 	// move body parts
 	int i = 0;
 	while (i < this->player.body_parts.size())
@@ -298,7 +300,7 @@ void	Grid::playerShrink()
 	int size = this->player.body_parts.size();
 	if (size > 1)
 		this->player.body_parts.back().dir = this->player.body_parts[size - 2].dir;
-	else
+	else if (size == 1)
 		this->player.body_parts.back().dir = this->player.dir;
 }
 

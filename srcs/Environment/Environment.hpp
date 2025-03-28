@@ -6,6 +6,8 @@
 #include <utils/parser.hpp>
 #include <utils/enums.hpp>
 #include <utils/structs.hpp>
+#include <Agent/Agent.hpp>
+
 
 class Environment
 {
@@ -22,14 +24,15 @@ class Environment
 		void	changeWin();
 
 	private:
-		// agent class
 		sf::Clock		clock;
 		Visual			*visual = nullptr;
 		flags			env_flags;
 		Grid			grid;
 		InputManager	input_manager;
-		bool			running, move, ai;
+		bool			running, move, ai_play;
 		gameInfos		infos;
+		Agent			ai_agent;
+		float			ai_move_time;
 
 		void	input();
 		void	tick(float delta);
