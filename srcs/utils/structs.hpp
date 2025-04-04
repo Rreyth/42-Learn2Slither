@@ -36,7 +36,8 @@ struct gameInfos
 };
 
 
-struct State {
+struct State
+{
 	int bonus_dir;    // 0 = none, 1 = up, 2 = down, 3 = left, 4 = right
 	int danger_up;    // distance from 0 (no danger) to 4
 	int danger_down;
@@ -63,8 +64,10 @@ struct State {
 };
 
 
-struct StateHash {
-	std::size_t operator()(const State &s) const {
+struct StateHash
+{
+	std::size_t operator()(const State &s) const
+	{
 		std::size_t seed = 0;
 		seed ^= std::hash<int>()(s.bonus_dir) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		seed ^= std::hash<int>()(s.danger_up) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
@@ -77,6 +80,14 @@ struct StateHash {
 		seed ^= std::hash<int>()(s.malus_right) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
 		return seed;
 	}
+};
+
+
+struct learnStep
+{
+	State	next_state;
+	double	reward = 0.0;
+	bool	done = false;
 };
 
 

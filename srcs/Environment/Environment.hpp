@@ -18,10 +18,12 @@ class Environment
 		void	run();
 		void	setMove(bool moved);
 		void	close();
-		void	reset();
+		State	reset();
 		Grid	&getGrid();
+		bool	getAiPlay();
 		void	startGame(s_settings settings);
 		void	changeWin();
+		void	step(const player_dir &action, learnStep &learn_step);
 
 	private:
 		sf::Clock		clock;
@@ -35,7 +37,7 @@ class Environment
 		float			ai_move_time;
 
 		void	input();
-		void	tick(float delta);
+		void	tick();
 		void	render();
 		int		checkMove();
 

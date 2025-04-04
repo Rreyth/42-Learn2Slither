@@ -15,7 +15,7 @@ struct flags
 	std::string	savefile = "";
 	std::string	loadfile = "";
 	int			size  = 10;
-	int			sessions = 10;
+	int			sessions = 100;
 };
 
 flags parse_flags(int argc, char **argv);

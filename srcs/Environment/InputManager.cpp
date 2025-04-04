@@ -76,7 +76,7 @@ void	InputManager::manageInput(Environment &env, Visual &visual)
 		if (event->is<sf::Event::Closed>())
 			env.close();
 		this->manageMouse(env, visual, event);
-		if (visual.getState() == GAME)
+		if (visual.getState() == GAME && !env.getAiPlay())
 			this->manageKeyboard(env, event);
 	}
 }

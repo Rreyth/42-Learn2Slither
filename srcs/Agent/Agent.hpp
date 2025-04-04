@@ -7,7 +7,12 @@
 
 # include <utils/structs.hpp>
 
+# define ALPHA 0.9
+# define GAMMA 0.95
+# define MIN_EPSILON 0.01
+
 class Environment;
+
 
 class Agent
 {
@@ -26,6 +31,9 @@ class Agent
 		std::unordered_map<State, std::vector<double>, StateHash> Q;
 		int		sessions;
 		bool	learn;
+		double	epsilon;
+
+		player_dir	choseAction(const State &state);
 };
 
 

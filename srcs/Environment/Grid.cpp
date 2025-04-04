@@ -208,11 +208,17 @@ void	Grid::movePlayer(const player_dir &dir)
 }
 
 
-std::string	Grid::getAgentView() const
+State	Grid::getAgentState()
 {
-	// TODO: state struct (agent see only 4 dirs from head)
-
-	return ("");
+	return State(this->getBonusDir(),
+				this->getDangerDist(UP),
+				this->getDangerDist(DOWN),
+				this->getDangerDist(LEFT),
+				this->getDangerDist(RIGHT),
+				this->getMalusDist(UP),
+				this->getMalusDist(DOWN),
+				this->getMalusDist(LEFT),
+				this->getMalusDist(RIGHT));
 }
 
 
@@ -311,7 +317,7 @@ int Grid::getPlayerLen() const
 }
 
 
-void	Grid::reset() //TODO: RM ?
+void	Grid::reset()
 {
 	this->initPlayer();
 	this->initApples();
@@ -324,4 +330,100 @@ void	Grid::start(int size)
 	this->initPlayer();
 	this->initApples();
 	this->closer = false;
+}
+
+
+int	Grid::getBonusDir()
+{
+	// 0 = none, 1 = up, 2 = down, 3 = left, 4 = right
+	const sf::Vector2i pos = this->player.head_pos;
+	for (s_apple &apple : this->apples)
+	{
+		if (!apple.bonus)
+			continue;
+		if (pos.y > apple.pos.y && pos.x == apple.pos.x)
+			return 1;
+		if (pos.y < apple.pos.y && pos.x == apple.pos.x)
+			return 2;
+		if (pos.x > apple.pos.x && pos.y == apple.pos.y)
+			return 3;
+		if (pos.x < apple.pos.x && pos.y == apple.pos.y)
+			return 4;
+	}
+	return 0;
+}
+
+
+int	Grid::getDangerDist(const player_dir dir)
+{
+	// danger = wall or body part
+	// distance from 0 (no danger) to 4
+
+	sf::Vector2i test_pos = this->player.head_pos;
+
+	for (int dist = 1; dist < 5; dist++)
+	{
+		switch (dir)
+		{
+			case UP:
+				test_pos.y -= 1;
+				break;
+			case DOWN:
+				test_pos.y += 1;
+				break;
+			case LEFT:
+				test_pos.x -= 1;
+				break;
+			case RIGHT:
+				test_pos.x += 1;
+				break;
+		}
+		if (this->occupiedByBody(test_pos) || this->wallHit(test_pos))
+			return dist;
+	}
+	return 0;
+}
+
+
+int	Grid::getMalusDist(const player_dir dir)
+{
+	// red apple check
+	// distance from 0 (no malus) to 4
+
+	sf::Vector2i test_pos = this->player.head_pos;
+
+	for (int dist = 1; dist < 5; dist++)
+	{
+		switch (dir)
+		{
+			case UP:
+				test_pos.y -= 1;
+			break;
+			case DOWN:
+				test_pos.y += 1;
+			break;
+			case LEFT:
+				test_pos.x -= 1;
+			break;
+			case RIGHT:
+				test_pos.x += 1;
+			break;
+		}
+		if (this->occupiedByMalus(test_pos))
+			return dist;
+	}
+	return 0;
+}
+
+
+bool	Grid::occupiedByMalus(const sf::Vector2i &pos)
+{
+	for (const s_apple &apple : this->apples)
+	{
+		if (apple.bonus)
+			continue;
+		if (pos == apple.pos)
+			return true;
+	}
+	return false;
 }

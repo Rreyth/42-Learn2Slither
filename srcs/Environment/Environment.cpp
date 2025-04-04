@@ -1,5 +1,6 @@
 #include <Environment/Environment.hpp>
-#include <iostream>
+// #include <cmath>
+// #include <iostream>
 
 Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agent(launch_flags.sessions, !launch_flags.dontlearn)
 {
@@ -10,7 +11,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 
 	this->running = true;
 	this->move = false;
-	this->ai_play = false;
+	this->ai_play = !launch_flags.visual;
 	this->ai_move_time = 0;
 
 	if (launch_flags.load)
@@ -22,8 +23,13 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 		catch (const std::exception &e)
 		{
 			std::cerr << e.what() << std::endl;
-			this->close();
 		}
+	}
+
+	if (this->ai_play)
+	{ // no visual, only ai running
+		this->ai_agent.play(*this);
+		this->close();
 	}
 }
 
@@ -49,7 +55,7 @@ void Environment::run()
 			std::string title("I'M A SNAKE! | " + std::to_string(static_cast<int>(fps)));
 			this->visual->getWin().setTitle(title);
 		}
-		this->tick(delta);
+		this->tick();
 		this->render();
 	}
 }
@@ -63,7 +69,7 @@ void Environment::input()
 }
 
 
-void Environment::tick(float delta)
+void Environment::tick()
 {
 	int reward = this->checkMove();
 	if (reward != 0)
@@ -79,9 +85,7 @@ void Environment::tick(float delta)
 
 void Environment::render()
 {
-	if (!this->visual) //TODO
-		std::cout << "WIP -> PRINT TRAINING INFOS" << std::endl;
-	else
+	if (this->visual)
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
 			this->infos);
 }
@@ -159,6 +163,12 @@ Grid	&Environment::getGrid()
 }
 
 
+bool	Environment::getAiPlay()
+{
+	return this->ai_play;
+}
+
+
 void Environment::close()
 {
 	if (this->visual)
@@ -173,11 +183,13 @@ void Environment::close()
 }
 
 
-void Environment::reset()
+State Environment::reset()
 {
 	this->running = true;
 	this->grid.reset();
 	this->infos = gameInfos();
+
+	return this->grid.getAgentState();
 }
 
 
@@ -204,8 +216,17 @@ void	Environment::changeWin()
 	this->input_manager.resetMouse();
 }
 
-//TODO # print if no visual
-// # load msg
-// # Training...
-// # Session X / nb session (rewrite each loop)
-// # end message with max life time and max length
+
+void	Environment::step(const player_dir &action, learnStep &learn_step)
+{
+	//TODO: add timer to slow ai
+
+	this->grid.movePlayer(action);
+	this->move = true;
+	this->tick();
+	learn_step.reward = this->infos.last_reward;
+	learn_step.next_state = this->grid.getAgentState();
+	learn_step.done = (learn_step.reward == -100);
+	this->render();
+}
+
