@@ -30,7 +30,7 @@ class Agent
 	private:
 		std::unordered_map<State, std::vector<double>, StateHash> Q;
 		int		sessions;
-		bool	learn;
+		bool	learn, loaded;
 		double	epsilon;
 
 		player_dir	choseAction(const State &state);
