@@ -20,10 +20,12 @@ class Environment
 		void	close();
 		State	reset();
 		Grid	&getGrid();
-		bool	getAiPlay();
+		bool	getAiPlay() const;
 		void	startGame(s_settings settings);
 		void	changeWin();
 		void	step(const player_dir &action, learnStep &learn_step);
+		void	setNextStep(bool is_next_step);
+
 
 	private:
 		sf::Clock		clock;
@@ -31,7 +33,7 @@ class Environment
 		flags			env_flags;
 		Grid			grid;
 		InputManager	input_manager;
-		bool			running, move, ai_play;
+		bool			running, move, ai_play, next_step;
 		gameInfos		infos;
 		Agent			ai_agent;
 		float			ai_move_time;

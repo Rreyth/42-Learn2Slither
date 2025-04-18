@@ -56,7 +56,7 @@ void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 						SPRITE_CIRCLE_ON, SPRITE_CIRCLE_OFF, texture_manager);
 
 	y = win_size.y * 0.85;
-	this->move_time_slider = Slider(0.1, 2, this->settings.move_time, "float", {x, y}, {w, h},
+	this->move_time_slider = Slider(0, 2, this->settings.move_time, "float", {x, y}, {w, h},
 						SPRITE_CIRCLE_ON, SPRITE_CIRCLE_OFF, texture_manager);
 
 	y = win_size.y * 0.45;

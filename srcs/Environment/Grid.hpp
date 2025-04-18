@@ -24,7 +24,7 @@ class Grid
 		void					moveApple(s_apple &apple);
 		bool					isCloserMove() const;
 		void					playerGrow();
-		void					playerShrink();
+		int						playerShrink();
 		int						getPlayerLen() const;
 		void					reset();
 		void					start(int size);

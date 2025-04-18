@@ -16,31 +16,34 @@ void	InputManager::manageKeyboard(Environment &env, const std::optional<sf::Even
 {
 	if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 	{
-		if (keyPressed->code == sf::Keyboard::Key::Escape)
-			env.close();
-		else if (keyPressed->code == sf::Keyboard::Key::Up)
+		// if (keyPressed->code == sf::Keyboard::Key::Escape)
+		// 	env.close();
+		if (!env.getAiPlay())
 		{
-			env.setMove(true);
-			env.getGrid().movePlayer(UP);
-		}
-		else if (keyPressed->code == sf::Keyboard::Key::Down)
-		{
-			env.setMove(true);
-			env.getGrid().movePlayer(DOWN);
-		}
-		else if (keyPressed->code == sf::Keyboard::Key::Left)
-		{
-			env.setMove(true);
-			env.getGrid().movePlayer(LEFT);
-		}
-		else if (keyPressed->code == sf::Keyboard::Key::Right)
-		{
-			env.setMove(true);
-			env.getGrid().movePlayer(RIGHT);
+			if (keyPressed->code == sf::Keyboard::Key::Up)
+			{
+				env.setMove(true);
+				env.getGrid().movePlayer(UP);
+			}
+			else if (keyPressed->code == sf::Keyboard::Key::Down)
+			{
+				env.setMove(true);
+				env.getGrid().movePlayer(DOWN);
+			}
+			else if (keyPressed->code == sf::Keyboard::Key::Left)
+			{
+				env.setMove(true);
+				env.getGrid().movePlayer(LEFT);
+			}
+			else if (keyPressed->code == sf::Keyboard::Key::Right)
+			{
+				env.setMove(true);
+				env.getGrid().movePlayer(RIGHT);
+			}
 		}
 		else if (keyPressed->code == sf::Keyboard::Key::Space)
 		{
-			env.reset();
+			env.setNextStep(true);
 		}
 	}
 }
@@ -76,7 +79,7 @@ void	InputManager::manageInput(Environment &env, Visual &visual)
 		if (event->is<sf::Event::Closed>())
 			env.close();
 		this->manageMouse(env, visual, event);
-		if (visual.getState() == GAME && !env.getAiPlay())
+		if (visual.getState() == GAME)
 			this->manageKeyboard(env, event);
 	}
 }

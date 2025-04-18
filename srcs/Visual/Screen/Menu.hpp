@@ -17,7 +17,7 @@ struct s_settings
 	bool	step_mode = false;
 	bool	start = false;
 	bool	AI_play = false;
-	float	move_time = 0.5;
+	float	move_time = 0.0;
 };
 
 

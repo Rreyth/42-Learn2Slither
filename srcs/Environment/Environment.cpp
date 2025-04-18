@@ -13,6 +13,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 	this->move = false;
 	this->ai_play = !launch_flags.visual;
 	this->ai_move_time = 0;
+	this->next_step = false;
 
 	if (launch_flags.load)
 	{
@@ -27,7 +28,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 	}
 
 	if (this->ai_play)
-	{ // no visual, only ai running
+	{ // no visual, only AI running
 		this->ai_agent.play(*this);
 		this->close();
 	}
@@ -42,21 +43,33 @@ Environment::~Environment()
 
 void Environment::run()
 {
-	float delta, fps;
+	float delta, timer;
+	timer = 0;
 	while (this->running)
 	{
+		this->next_step = false;
 		this->input();
 		if (!this->running)
 			break;
 		delta = clock.restart().asSeconds();
-		if (this->visual)
+		if (!this->env_flags.stepmode)
 		{
-			fps = 1.0f / delta;
-			std::string title("I'M A SNAKE! | " + std::to_string(static_cast<int>(fps)));
-			this->visual->getWin().setTitle(title);
+			timer += delta;
+			if (timer >= this->ai_move_time)
+			{
+				this->next_step = true;
+				timer = 0;
+			}
 		}
+
+		// if (this->visual)
+		// {
+			// fps = 1.0f / delta;
+			// std::string title("I'M A SNAKE! | " + std::to_string(static_cast<int>(fps)));
+			// this->visual->getWin().setTitle(title);
+		// }
 		this->tick();
-		this->render();
+		this->render(); //TODO: ADAPT FOR AI
 	}
 }
 
@@ -80,11 +93,32 @@ void Environment::tick()
 	{
 		this->visual->tick(*this, this->input_manager.getMouse());
 	}
+	if (this->ai_play && this->visual && this->next_step)
+	{
+		State state = this->grid.getAgentState();
+		this->ai_agent.visualPlay(*this, state);
+
+		visualModAiStep ai_step = this->ai_agent.getVisualStep();
+
+		if (ai_step.step.done)
+		{
+			this->ai_agent.visualStepEnd();
+			this->reset();
+		}
+
+		if (ai_step.session_count == this->env_flags.sessions) //End of training / play
+		{
+			this->visual->setState(AI_GAMEOVER);
+			this->ai_play = false;
+		}
+	}
 }
 
 
-void Environment::render()
+void Environment::render() //TODO: HERE
 {
+	//TODO: modif render when ai plays
+	// get ai struct
 	if (this->visual)
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
 			this->infos);
@@ -93,7 +127,9 @@ void Environment::render()
 
 int Environment::checkMove()
 {
-	int reward = -1;
+	int reward = MOVE_REWARD;
+	int shrinked = 0; // 0 = neutral, 1 = valid shrink, -1 = nothing to shrink
+
 	if (!this->move)
 		return 0;
 	this->infos.nb_moves++;
@@ -102,50 +138,48 @@ int Environment::checkMove()
 
 	if (this->grid.wallHit(pos) || this->grid.occupiedByBody(pos))
 	{
-		// TODO: death -> if AI -> next session
-		reward = -100;
+		reward = DEATH_REWARD;
 		if (!this->ai_play)
 		{
 			this->visual->setState(GAMEOVER);
 			this->visual->gameOverInit(this->infos);
 		}
-		else
-			this->reset();
+		// else
+		// 	this->reset();
 	}
 	else if (this->grid.occupiedByApples(pos))
 	{
 		s_apple& apple = this->grid.getAppleByPos(pos);
 		if (apple.bonus)
 		{
-			reward = 30;
+			reward = BONUS_REWARD;
 			this->grid.playerGrow();
 		}
 		else
 		{
-			this->grid.playerShrink();
-			reward = -30;
+			shrinked = this->grid.playerShrink();
+			reward = MALUS_REWARD;
 		}
 		int	current_len = this->grid.getPlayerLen();
-		if (current_len == 0)
+		if (current_len == 1 && shrinked == -1)
 		{
-			// TODO: death
-			this->infos.current_size = 0;
+			this->infos.current_size = current_len;
 			if (!this->ai_play)
 			{
 				this->visual->setState(GAMEOVER);
 				this->visual->gameOverInit(this->infos);
 			}
-			else
-				this->reset();
-			return -100;
+			// else
+			// 	this->reset();
+			return DEATH_REWARD;
 		}
-		this->infos.current_size = current_len + 1;
-		if (current_len + 1 > this->infos.max_size)
-			this->infos.max_size = current_len + 1;
+		this->infos.current_size = current_len;
+		if (current_len > this->infos.max_size)
+			this->infos.max_size = current_len;
 		this->grid.moveApple(apple);
 	}
 	else if (this->grid.isCloserMove())
-		reward = 1;
+		reward = MOVE_CLOSER_REWARD;
 
 	return reward;
 }
@@ -163,7 +197,7 @@ Grid	&Environment::getGrid()
 }
 
 
-bool	Environment::getAiPlay()
+bool	Environment::getAiPlay() const
 {
 	return this->ai_play;
 }
@@ -195,6 +229,7 @@ State Environment::reset()
 
 void	Environment::startGame(s_settings settings)
 {
+	// TODO : add choice -> new ai or same ai
 	this->reset();
 	this->input_manager.resetMouse();
 	this->grid.start(settings.size);
@@ -208,6 +243,16 @@ void	Environment::startGame(s_settings settings)
 
 	this->ai_agent.setLearn(settings.learn);
 	this->ai_agent.setSessions(settings.sessions);
+	this->ai_agent.resetVisualStep();
+	std::srand(std::time(nullptr));
+
+	// if (this->ai_play)
+	// {
+	// 	this->ai_agent.play(*this);
+	// 	// TODO : GAME OVER SCREEN FOR AI
+	// 	this->visual->setState(GAMEOVER);
+	// 	this->visual->gameOverInit(this->infos);
+	// }
 }
 
 
@@ -219,14 +264,19 @@ void	Environment::changeWin()
 
 void	Environment::step(const player_dir &action, learnStep &learn_step)
 {
-	//TODO: add timer to slow ai
+	//TODO: step-by-step mod needs input
 
 	this->grid.movePlayer(action);
 	this->move = true;
 	this->tick();
 	learn_step.reward = this->infos.last_reward;
 	learn_step.next_state = this->grid.getAgentState();
-	learn_step.done = (learn_step.reward == -100);
-	this->render();
+	learn_step.done = (learn_step.reward == DEATH_REWARD);
+	// this->render(); //TODO : REMOVE ?
 }
 
+
+void	Environment::setNextStep(bool is_next_step)
+{
+	this->next_step = is_next_step;
+}

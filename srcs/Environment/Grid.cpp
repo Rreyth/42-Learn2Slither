@@ -1,4 +1,5 @@
 #include <Environment/Grid.hpp>
+#include <iostream>
 #include <random>
 
 
@@ -95,7 +96,7 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 	if (pos == this->player.head_pos)
 		return true;
 
-	for (const s_body body : this->player.body_parts)
+	for (const s_body &body : this->player.body_parts)
 	{
 		if (pos == body.pos)
 			return true;
@@ -106,7 +107,7 @@ bool	Grid::occupiedByPlayer(const sf::Vector2i &pos)
 
 bool	Grid::occupiedByBody(const sf::Vector2i &pos)
 {
-	for (const s_body body : this->player.body_parts)
+	for (const s_body &body : this->player.body_parts)
 	{
 		if (pos == body.pos)
 			return true;
@@ -201,7 +202,7 @@ void	Grid::movePlayer(const player_dir &dir)
 	}
 	if (this->player.body_parts.size() > 1)
 		this->player.body_parts.back().dir = this->player.body_parts[i - 2].dir;
-	else
+	else if (this->player.body_parts.size() == 1)
 		this->player.body_parts.back().dir = this->player.dir;
 
 	this->next_body_part = old_pos;
@@ -296,11 +297,15 @@ bool	Grid::isCloserMove() const
 void	Grid::playerGrow()
 {
 	this->player.body_parts.push_back(this->next_body_part);
+	if (this->player.body_parts.size() == 1)
+		this->player.body_parts.back().dir = this->player.dir;
 }
 
 
-void	Grid::playerShrink()
+int	Grid::playerShrink()
 {
+	if (this->player.body_parts.empty())
+		return -1;
 	this->player.body_parts.pop_back();
 
 	int size = this->player.body_parts.size();
@@ -308,12 +313,13 @@ void	Grid::playerShrink()
 		this->player.body_parts.back().dir = this->player.body_parts[size - 2].dir;
 	else if (size == 1)
 		this->player.body_parts.back().dir = this->player.dir;
+	return 1;
 }
 
 
 int Grid::getPlayerLen() const
 {
-	return this->player.body_parts.size();
+	return this->player.body_parts.size() + 1; //body + head
 }
 
 

@@ -9,12 +9,13 @@
 #include <Environment/Environment.hpp>
 
 
-Agent::Agent(int sessions, bool learn)
+Agent::Agent(int sessions, bool learn) : visualStep()
 {
 	this->sessions = sessions;
 	this->learn = learn;
 	this->loaded = false;
 	this->epsilon = 1.0;
+	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
 }
 
 
@@ -131,7 +132,7 @@ void	Agent::play(Environment &env)
 	max_bonus = 0;
 	max_malus = 0;
 	decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
-	std::srand(std::time(nullptr));
+	// std::srand(std::time(nullptr));
 
 	if (this->learn)
 		std::cout << "Starting training for " << this->sessions << " sessions" << std::endl;
@@ -152,9 +153,9 @@ void	Agent::play(Environment &env)
 
 			env.step(action, learn_step);
 
-			if (learn_step.reward == 30)
+			if (learn_step.reward == BONUS_REWARD)
 				bonus_counter++;
-			if (learn_step.reward == -30)
+			if (learn_step.reward == MALUS_REWARD)
 				malus_counter++;
 
 			old_value = this->Q[state][action];
@@ -202,9 +203,54 @@ void	Agent::play(Environment &env)
 }
 
 
-player_dir	Agent::choseAction(const State &state)
+void	Agent::visualPlay(Environment &env, State &state)
 {
-	player_dir	action;
+	player_dir			action;
+	double				old_value, next_max;
+	std::vector<double>	q_values;
+
+	action = choseAction(state);
+	env.step(action, this->visualStep.step);
+
+	if (this->visualStep.step.reward == BONUS_REWARD)
+		this->visualStep.bonus_count++;
+	else if (this->visualStep.step.reward == MALUS_REWARD)
+		this->visualStep.malus_count++;
+
+	old_value = this->Q[state][action];
+	if (this->Q.contains(this->visualStep.step.next_state))
+	{
+		q_values = this->Q[this->visualStep.step.next_state];
+		next_max = *std::ranges::max_element(q_values);
+	}
+	else
+		next_max = 0.0;
+
+	if (this->learn)
+		this->Q[state][action] = (1 - ALPHA) * old_value + ALPHA * (this->visualStep.step.reward + GAMMA * next_max);
+	this->visualStep.step_count++;
+	this->visualStep.curr_len = env.getGrid().getPlayerLen();
+	if (this->visualStep.curr_len > this->visualStep.max_len)
+		this->visualStep.max_len = this->visualStep.curr_len;
+}
+
+
+void	Agent::visualStepEnd()
+{
+	this->epsilon = std::max(MIN_EPSILON, this->epsilon * this->visualStep.decay);
+	if (this->visualStep.step_count > this->visualStep.max_step)
+		this->visualStep.max_step = this->visualStep.step_count;
+	if (this->visualStep.malus_count > this->visualStep.max_malus)
+		this->visualStep.max_malus = this->visualStep.malus_count;
+	if (this->visualStep.bonus_count > this->visualStep.max_bonus)
+		this->visualStep.max_bonus = this->visualStep.bonus_count;
+	this->visualStep.session_count++;
+}
+
+
+player_dir Agent::choseAction(const State &state)
+{
+	player_dir action;
 
 	double randomVal = static_cast<double>(std::rand()) / RAND_MAX;
 
@@ -229,4 +275,22 @@ player_dir	Agent::choseAction(const State &state)
 	}
 
 	return action;
+}
+
+
+visualModAiStep &Agent::getVisualStep()
+{
+	return this->visualStep;
+}
+
+
+void	Agent::resetVisualStep()
+{
+	this->visualStep = visualModAiStep();
+}
+
+
+void	Agent::resetAI()
+{
+	this->Q.clear();
 }

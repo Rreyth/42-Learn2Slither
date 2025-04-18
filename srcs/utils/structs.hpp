@@ -91,4 +91,20 @@ struct learnStep
 };
 
 
+struct visualModAiStep
+{
+	learnStep	step;
+	double		decay;
+	int			step_count = 0,
+				max_step = 0,
+				curr_len = 0,
+				max_len = 0,
+				bonus_count = 0,
+				max_bonus = 0,
+				malus_count = 0,
+				max_malus = 0,
+				session_count = 0;
+};
+
+
 #endif //STRUCTS_HPP

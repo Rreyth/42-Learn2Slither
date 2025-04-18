@@ -4,26 +4,28 @@
 
 enum gameState
 {
-  MENU,
-  GAME,
-  GAMEOVER
+	MENU,
+	GAME,
+	AI_GAME,
+	GAMEOVER,
+	AI_GAMEOVER,
 };
 
 
 enum player_dir
 {
-  UP,
-  DOWN,
-  LEFT,
-  RIGHT
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT
 };
 
 
 typedef enum e_mouse_button
 {
-  MBUT_LEFT,
-  MBUT_MIDDLE,
-  MBUT_RIGHT
+	MBUT_LEFT,
+	MBUT_MIDDLE,
+	MBUT_RIGHT
 }	mouse_button;
 
 
