@@ -57,7 +57,7 @@ void	Visual::setState(gameState state)
 
 
 void	Visual::render(s_player &player, std::vector<s_apple> &apples,
-						gameInfos &infos)
+						gameInfos &infos, float &move_time, visualModAiStep &ai_step)
 {
 	this->window.clear();
 
@@ -70,8 +70,14 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 			this->game_screen.render(this->window, this->text, this->texture_manager,
 									player, apples, infos);
 			break;
+		case AI_GAME:
+			this->ai_game_screen.render(this->window, this->text, this->texture_manager,
+										player, apples, infos, move_time, ai_step);
+			break;
 		case GAMEOVER:
 			this->game_over_screen.render(this->window, this->text, this->texture_manager);
+			break;
+		case AI_GAMEOVER: // TODO
 			break;
 	}
 
@@ -87,7 +93,7 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 		case MENU:
 			this->menu.tick(env, mouse, this->window);
 			settings = this->menu.getSettings();
-			if (settings.start)
+			if (settings.start && !settings.AI_play)
 			{
 				this->state = GAME;
 
@@ -95,7 +101,14 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 											settings.size + 2);
 				env.startGame(settings);
 			}
-			//TODO: add ai play
+			else if (settings.start && settings.AI_play)
+			{
+				this->state = AI_GAME;
+
+				this->ai_game_screen.visualInit(this->window, this->texture_manager,
+												settings.size + 2);
+				env.startGame(settings);
+			}
 			break;
 		case GAME:
 			this->game_screen.tick(mouse);
@@ -106,6 +119,19 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 				this->resetWindow();
 				env.changeWin();
 			}
+			break;
+		case AI_GAME:
+			this->ai_game_screen.tick(mouse);
+			if (this->ai_game_screen.BackToMenu())
+			{
+				this->state = MENU;
+				this->menu.getSettings().start = false;
+				this->menu.getSettings().AI_play = false;
+				this->resetWindow();
+				env.changeWin();
+			}
+			else if (this->ai_game_screen.isNextStep())
+				env.setNextStep(true);
 			break;
 		case GAMEOVER:
 			this->game_over_screen.tick(mouse);
@@ -119,6 +145,9 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 			else if (this->game_over_screen.getQuit())
 				env.close();
 			break;
+		case AI_GAMEOVER:
+			break;
+		//TODO: add ai GAMEOVER
 	}
 }
 

@@ -20,25 +20,28 @@ void	InputManager::manageKeyboard(Environment &env, const std::optional<sf::Even
 		// 	env.close();
 		if (!env.getAiPlay())
 		{
-			if (keyPressed->code == sf::Keyboard::Key::Up)
+			if (!env.hasMoved())
 			{
-				env.setMove(true);
-				env.getGrid().movePlayer(UP);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Down)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(DOWN);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Left)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(LEFT);
-			}
-			else if (keyPressed->code == sf::Keyboard::Key::Right)
-			{
-				env.setMove(true);
-				env.getGrid().movePlayer(RIGHT);
+				if (keyPressed->code == sf::Keyboard::Key::Up)
+				{
+					env.setMove(true);
+					env.getGrid().movePlayer(UP);
+				}
+				else if (keyPressed->code == sf::Keyboard::Key::Down)
+				{
+					env.setMove(true);
+					env.getGrid().movePlayer(DOWN);
+				}
+				else if (keyPressed->code == sf::Keyboard::Key::Left)
+				{
+					env.setMove(true);
+					env.getGrid().movePlayer(LEFT);
+				}
+				else if (keyPressed->code == sf::Keyboard::Key::Right)
+				{
+					env.setMove(true);
+					env.getGrid().movePlayer(RIGHT);
+				}
 			}
 		}
 		else if (keyPressed->code == sf::Keyboard::Key::Space)

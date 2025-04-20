@@ -61,13 +61,6 @@ void Environment::run()
 				timer = 0;
 			}
 		}
-
-		// if (this->visual)
-		// {
-			// fps = 1.0f / delta;
-			// std::string title("I'M A SNAKE! | " + std::to_string(static_cast<int>(fps)));
-			// this->visual->getWin().setTitle(title);
-		// }
 		this->tick();
 		this->render(); //TODO: ADAPT FOR AI
 	}
@@ -93,35 +86,34 @@ void Environment::tick()
 	{
 		this->visual->tick(*this, this->input_manager.getMouse());
 	}
-	if (this->ai_play && this->visual && this->next_step)
-	{
-		State state = this->grid.getAgentState();
-		this->ai_agent.visualPlay(*this, state);
-
-		visualModAiStep ai_step = this->ai_agent.getVisualStep();
-
-		if (ai_step.step.done)
-		{
-			this->ai_agent.visualStepEnd();
-			this->reset();
-		}
-
-		if (ai_step.session_count == this->env_flags.sessions) //End of training / play
-		{
-			this->visual->setState(AI_GAMEOVER);
-			this->ai_play = false;
-		}
-	}
+	// if (this->ai_play && this->visual && this->next_step) //TODO : SIGSEGV
+	// {
+	//	this->next_step = false;
+	// 	State state = this->grid.getAgentState();
+	// 	this->ai_agent.visualPlay(*this, state);
+	//
+	// 	visualModAiStep ai_step = this->ai_agent.getVisualStep();
+	//
+	// 	if (ai_step.step.done)
+	// 	{
+	// 		this->ai_agent.visualStepEnd();
+	// 		this->reset();
+	// 	}
+	//
+	// 	if (ai_step.session_count == this->env_flags.sessions) //End of training / play
+	// 	{
+	// 		this->visual->setState(AI_GAMEOVER);
+	// 		this->ai_play = false;
+	// 	}
+	// }
 }
 
 
 void Environment::render() //TODO: HERE
 {
-	//TODO: modif render when ai plays
-	// get ai struct
 	if (this->visual)
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
-			this->infos);
+			this->infos, this->ai_move_time, this->ai_agent.getVisualStep());
 }
 
 
@@ -188,6 +180,12 @@ int Environment::checkMove()
 void Environment::setMove(bool moved)
 {
 	this->move = moved;
+}
+
+
+bool Environment::hasMoved() const
+{
+	return this->move;
 }
 
 
@@ -272,7 +270,6 @@ void	Environment::step(const player_dir &action, learnStep &learn_step)
 	learn_step.reward = this->infos.last_reward;
 	learn_step.next_state = this->grid.getAgentState();
 	learn_step.done = (learn_step.reward == DEATH_REWARD);
-	// this->render(); //TODO : REMOVE ?
 }
 
 

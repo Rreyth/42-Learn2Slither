@@ -17,6 +17,7 @@ class Environment
 
 		void	run();
 		void	setMove(bool moved);
+		bool	hasMoved() const;
 		void	close();
 		State	reset();
 		Grid	&getGrid();
@@ -42,8 +43,6 @@ class Environment
 		void	tick();
 		void	render();
 		int		checkMove();
-
-		// TODO: to_state State struct
 };
 
 

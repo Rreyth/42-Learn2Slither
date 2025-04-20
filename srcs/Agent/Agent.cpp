@@ -16,6 +16,7 @@ Agent::Agent(int sessions, bool learn) : visualStep()
 	this->loaded = false;
 	this->epsilon = 1.0;
 	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
+	this->visualStep.total_sessions = this->sessions;
 }
 
 
@@ -287,6 +288,8 @@ visualModAiStep &Agent::getVisualStep()
 void	Agent::resetVisualStep()
 {
 	this->visualStep = visualModAiStep();
+	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
+	this->visualStep.total_sessions = this->sessions;
 }
 
 

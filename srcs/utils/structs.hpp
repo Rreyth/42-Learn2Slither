@@ -103,7 +103,8 @@ struct visualModAiStep
 				max_bonus = 0,
 				malus_count = 0,
 				max_malus = 0,
-				session_count = 0;
+				session_count = 0,
+				total_sessions = 0;
 };
 
 

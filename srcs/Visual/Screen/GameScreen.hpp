@@ -4,7 +4,7 @@
 # include <SFML/Graphics.hpp>
 
 # include <utils/TextureManager.hpp>
-# include <Visual/Screen/UI/Button.hpp>
+# include <Visual/Screen/UI/RoundButton.hpp>
 # include <Environment/Grid.hpp>
 
 # define TILE_SIZE 32
@@ -29,7 +29,7 @@ class GameScreen
 
 	private:
 		sf::Vector2i	grid_pos;
-		Button			back_button;
+		RoundButton		back_button;
 		bool			back;
 		int				tiles_nb;
 

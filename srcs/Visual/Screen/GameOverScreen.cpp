@@ -26,16 +26,18 @@ void	GameOverScreen::init(gameInfos &infos, sf::RenderWindow &window,
 
 	x = win_size.x / 3;
 	y = win_size.y * 0.9;
-	w = 130;
+	w = 140;
 	h = 40;
 
-	this->quit_button = Button("Quit", 25, sf::Color::White, x, y, w, h,
-				SPRITE_WIDE_BUTTON_ON, SPRITE_WIDE_BUTTON_OFF, texture_manager);
+	this->quit_button = RoundButton("Quit", 25, sf::Color::White,
+						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
+						sf::Color(100, 100, 100), sf::Color::White);
 
 	x = win_size.x / 3 * 2;
 
-	this->menu_button = Button("Back to Menu", 25, sf::Color::White, x, y, w, h,
-				SPRITE_WIDE_BUTTON_ON, SPRITE_WIDE_BUTTON_OFF, texture_manager);
+	this->menu_button = RoundButton("Back to menu", 25, sf::Color::White,
+						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
+						sf::Color(100, 100, 100), sf::Color::White);
 }
 
 
@@ -68,8 +70,8 @@ void	GameOverScreen::render(sf::RenderWindow &window, sf::Text &text, TextureMan
 	this->displayInfos(window, text);
 
 	// buttons
-	this->quit_button.draw(window, text, texture_manager);
-	this->menu_button.draw(window, text, texture_manager);
+	this->quit_button.draw(window, text);
+	this->menu_button.draw(window, text);
 }
 
 

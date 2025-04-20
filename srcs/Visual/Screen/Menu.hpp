@@ -1,7 +1,7 @@
 #ifndef MENU_HPP
 # define MENU_HPP
 
-#include <Visual/Screen/UI/Button.hpp>
+#include <Visual/Screen/UI/RoundButton.hpp>
 #include <Visual/Screen/UI/Slider.hpp>
 #include <Visual/Screen/UI/ToggleButton.hpp>
 #include <utils/parser.hpp>
@@ -36,7 +36,7 @@ class Menu
 
 	private:
 		s_settings		settings;
-		Button			play_button, AI_button, quit_button;
+		RoundButton		play_button, AI_button, quit_button;
 		Slider			size_slider, sessions_slider, move_time_slider;
 		ToggleButton	learn_toggle, step_toggle;
 

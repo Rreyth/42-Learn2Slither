@@ -34,19 +34,22 @@ void		Menu::visualInit(sf::Vector2u win_size, TextureManager &texture_manager)
 	y = win_size.y * 0.4;
 	w = 200;
 	h = 50;
-	this->play_button = Button("Play", 30, sf::Color::White, x, y, w, h,
-					SPRITE_WIDE_BUTTON_ON, SPRITE_WIDE_BUTTON_OFF, texture_manager);
+	this->play_button = RoundButton("Play", 30, sf::Color::White, {x, y}, {w, h},
+						10, sf::Color(200, 200, 200), sf::Color(100, 100, 100),
+						sf::Color::White);
 
 	y = win_size.y * 0.6;
-	this->AI_button = Button("AI play", 30, sf::Color::White, x, y, w, h,
-					SPRITE_WIDE_BUTTON_ON, SPRITE_WIDE_BUTTON_OFF, texture_manager);
+	this->AI_button = RoundButton("AI play", 30, sf::Color::White, {x, y}, {w, h},
+						10, sf::Color(200, 200, 200), sf::Color(100, 100, 100),
+						sf::Color::White);
 
 	x = win_size.x * 0.1;
 	y = win_size.y * 0.885;
 	w = 100;
 	h = 40;
-	this->quit_button = Button("Quit", 25, sf::Color::White, x, y, w, h,
-						SPRITE_BUTTON_ON, SPRITE_BUTTON_OFF, texture_manager);
+	this->quit_button = RoundButton("Quit", 25, sf::Color::White, {x, y}, {w, h},
+						10, sf::Color(200, 200, 200), sf::Color(100, 100, 100),
+						sf::Color::White);
 
 	x = win_size.x * 3/4;
 	y = win_size.y * 0.25;
@@ -93,9 +96,9 @@ void Menu::render(sf::RenderWindow &window, sf::Text &text, TextureManager &text
 	drawText(window, text, "Learn2Slither", pos, 50, sf::Text::Bold, sf::Color::White);
 
 	//buttons
-	this->play_button.draw(window, text, texture_manager);
-	this->AI_button.draw(window, text, texture_manager);
-	this->quit_button.draw(window, text, texture_manager);
+	this->play_button.draw(window, text);
+	this->AI_button.draw(window, text);
+	this->quit_button.draw(window, text);
 
 	//settings
 	pos.x = win_size.x * 3/4;

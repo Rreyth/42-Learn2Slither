@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 #include <Visual/Screen/GameOverScreen.hpp>
 #include <Visual/Screen/GameScreen.hpp>
+#include <Visual/Screen/AIGameScreen.hpp>
 #include <Visual/Screen/Menu.hpp>
 #include <utils/TextureManager.hpp>
 #include <utils/enums.hpp>
@@ -26,7 +27,7 @@ class Visual
 		gameState			&getState();
 		void				setState(gameState state);
 		void				render(s_player &player, std::vector<s_apple> &apples,
-									gameInfos &infos);
+									gameInfos &infos, float &move_time, visualModAiStep &ai_step);
 		void				tick(Environment &env, Mouse &mouse);
 		void				gameOverInit(gameInfos &infos);
 
@@ -37,6 +38,7 @@ class Visual
 		TextureManager		texture_manager;
 		Menu				menu;
 		GameScreen			game_screen;
+		AIGameScreen		ai_game_screen;
 		GameOverScreen		game_over_screen;
 		gameState			state;
 

@@ -1,28 +1,37 @@
-#include <Visual/Screen/GameScreen.hpp>
+#include <Visual/Screen/AIGameScreen.hpp>
 #include <utils/functions.hpp>
 
-GameScreen::GameScreen()
+
+AIGameScreen::AIGameScreen()
 {
 	this->tiles_nb = 12;
 	this->back = false;
+	this->next_step = false;
 }
 
 
-GameScreen::~GameScreen()
+AIGameScreen::~AIGameScreen()
 {
 }
 
 
-bool	GameScreen::BackToMenu() const
+bool	AIGameScreen::BackToMenu() const
 {
 	return this->back;
 }
 
 
-void	GameScreen::visualInit(sf::RenderWindow &window, TextureManager &texture_manager,
+bool	AIGameScreen::isNextStep() const
+{
+	return this->next_step;
+}
+
+
+void	AIGameScreen::visualInit(sf::RenderWindow &window, TextureManager &texture_manager,
 								int tiles_nb)
 {
 	this->back = false;
+	this->next_step = false;
 	this->tiles_nb = tiles_nb;
 	sf::Vector2u win_size((tiles_nb + 1) * TILE_SIZE * 2, (tiles_nb + 2) * TILE_SIZE);
 	this->grid_pos = sf::Vector2i(win_size.x * 0.5 - this->tiles_nb * TILE_SIZE,
@@ -54,23 +63,36 @@ void	GameScreen::visualInit(sf::RenderWindow &window, TextureManager &texture_ma
 	w = 120;
 	h = 40;
 	this->back_button = RoundButton("Back to menu", 20, sf::Color::White,
-					{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
-					sf::Color(100, 100, 100), sf::Color::White);
+						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
+						sf::Color(100, 100, 100), sf::Color::White);
+
+	x -= 240;
+
+	this->step_button = RoundButton("Next step", 20, sf::Color::White,
+						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
+						sf::Color(100, 100, 100), sf::Color::White);
 }
 
 
-void	GameScreen::tick(Mouse &mouse)
+void	AIGameScreen::tick(Mouse &mouse)
 {
+	this->back = false;
+	this->next_step = false;
+
 	this->back_button.tick(mouse);
+	this->step_button.tick(mouse);
 
 	if (this->back_button.getPressed())
 		this->back = true;
+	if (this->step_button.getPressed())
+		this->next_step = true;
 }
 
 
-void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
+void	AIGameScreen::render(sf::RenderWindow &window, sf::Text &text,
 							TextureManager &texture_manager, s_player &player,
-							std::vector<s_apple> &apples, gameInfos &infos)
+							std::vector<s_apple> &apples, gameInfos &infos,
+							float &move_time, visualModAiStep &ai_step)
 {
 	// background
 	this->gameBackground(window, texture_manager);
@@ -80,13 +102,14 @@ void	GameScreen::render(sf::RenderWindow &window, sf::Text &text,
 	this->drawElements(window, texture_manager, player, apples);
 
 	// right side
-	this->displayInfos(window, text, infos);
+	this->displayInfos(window, text, infos, move_time, ai_step);
 
 	this->back_button.draw(window, text);
+	this->step_button.draw(window, text);
 }
 
 
-void	GameScreen::gameBackground(sf::RenderWindow &window, TextureManager &texture_manager)
+void	AIGameScreen::gameBackground(sf::RenderWindow &window, TextureManager &texture_manager)
 {
 	drawBackground(window, texture_manager);
 	sf::RectangleShape darkLayer(sf::Vector2f(window.getSize()));
@@ -96,7 +119,7 @@ void	GameScreen::gameBackground(sf::RenderWindow &window, TextureManager &textur
 }
 
 
-void	GameScreen::drawGrid(sf::RenderWindow &window, TextureManager &texture_manager)
+void	AIGameScreen::drawGrid(sf::RenderWindow &window, TextureManager &texture_manager)
 {
 	sprite_name		sprite;
 	sf::Vector2f	pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
@@ -119,7 +142,7 @@ void	GameScreen::drawGrid(sf::RenderWindow &window, TextureManager &texture_mana
 }
 
 
-void	GameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
+void	AIGameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
 								s_player &player, std::vector<s_apple> &apples)
 {
 	sf::Vector2f	visual_pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
@@ -174,38 +197,52 @@ void	GameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_
 }
 
 
-void	GameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
-								gameInfos &infos)
+void	AIGameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
+								gameInfos &infos, float &move_time,
+								visualModAiStep &ai_step)
 {
 	float			y_mult, y_init;
 	sf::Vector2f	pos;
-	std::string		all_str[] = {"Nb moves:", std::to_string(infos.nb_moves),
-							"Current size:", std::to_string(infos.current_size),
-							"Max size:", std::to_string(infos.max_size),
-							"Last reward:", std::to_string(infos.last_reward)};
+	std::string		all_str[] = {"Time per move:", std::to_string(move_time),
+							"Last reward:", std::to_string(infos.last_reward),
+							"Nb steps:", std::to_string(ai_step.step_count),
+							"Max steps:", std::to_string(ai_step.max_step),
+							"Current size:", std::to_string(ai_step.curr_len),
+							"Max size:", std::to_string(ai_step.max_len),
+							"Green apples (this session):", std::to_string(ai_step.bonus_count),
+							"Max green apples:", std::to_string(ai_step.max_bonus),
+							"Red apples (this session):", std::to_string(ai_step.malus_count),
+							"Max red apples:", std::to_string(ai_step.max_malus),
+							"Session:", std::to_string(ai_step.session_count), "/", std::to_string(ai_step.total_sessions)};
 
+	//TODO : display
 	pos.x = window.getSize().x * 3 / 4;
-	y_init = window.getSize().y;
-	y_mult = 0.1;
+	pos.y = window.getSize().y * 0.5;
+	drawText(window, text, "TODO", pos, 30,
+					sf::Text::Bold, sf::Color::White);
 
-	for (std::string str : all_str)
-	{
-		pos.y = y_init * y_mult;
-		drawText(window, text, str, pos, y_init * 0.05,
-				sf::Text::Bold, sf::Color::White);
-		y_mult += 0.1;
-	}
+	// pos.x = window.getSize().x * 3 / 4;
+	// y_init = window.getSize().y;
+	// y_mult = 0.1;
+	//
+	// for (std::string str : all_str)
+	// {
+	// 	pos.y = y_init * y_mult;
+	// 	drawText(window, text, str, pos, y_init * 0.05,
+	// 			sf::Text::Bold, sf::Color::White);
+	// 	y_mult += 0.1;
+	// }
 }
 
 
-bool	GameScreen::isAngle(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
+bool	AIGameScreen::isAngle(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
 {
 	return  !((actual_pos.x == prev_pos.x && actual_pos.x == next_pos.x) ||
 		(actual_pos.y == prev_pos.y && actual_pos.y == next_pos.y));
 }
 
 
-player_dir	GameScreen::getAngleDir(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
+player_dir	AIGameScreen::getAngleDir(sf::Vector2i actual_pos, sf::Vector2i prev_pos, sf::Vector2i next_pos)
 {
 	if ((prev_pos.x == actual_pos.x + 1 && next_pos.y == actual_pos.y - 1) ||
 		(prev_pos.y == actual_pos.y - 1 && next_pos.x == actual_pos.x + 1))

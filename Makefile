@@ -26,11 +26,14 @@ SRCS				:=	srcs/main.cpp \
 						srcs/Visual/Visual.cpp \
 						srcs/Visual/Screen/Menu.cpp \
 						srcs/Visual/Screen/GameScreen.cpp \
+						srcs/Visual/Screen/AIGameScreen.cpp \
 						srcs/Visual/Screen/GameOverScreen.cpp\
 						\
 						srcs/Visual/Screen/UI/Slider.cpp\
 						srcs/Visual/Screen/UI/Button.cpp\
+						srcs/Visual/Screen/UI/RoundButton.cpp\
 						srcs/Visual/Screen/UI/ToggleButton.cpp\
+						srcs/Visual/Screen/UI/RoundedRectangleShape.cpp\
 						\
 						srcs/Environment/Grid.cpp \
 						srcs/Environment/Environment.cpp \
