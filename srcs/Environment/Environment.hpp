@@ -34,7 +34,7 @@ class Environment
 		flags			env_flags;
 		Grid			grid;
 		InputManager	input_manager;
-		bool			running, move, ai_play, next_step;
+		bool			running, move, ai_play, next_step, ai_playing;
 		gameInfos		infos;
 		Agent			ai_agent;
 		float			ai_move_time;

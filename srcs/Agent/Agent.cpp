@@ -246,6 +246,9 @@ void	Agent::visualStepEnd()
 	if (this->visualStep.bonus_count > this->visualStep.max_bonus)
 		this->visualStep.max_bonus = this->visualStep.bonus_count;
 	this->visualStep.session_count++;
+	this->visualStep.step_count = 0;
+	this->visualStep.malus_count = 0;
+	this->visualStep.bonus_count = 0;
 }
 
 

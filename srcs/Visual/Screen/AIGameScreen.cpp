@@ -44,20 +44,23 @@ void	AIGameScreen::visualInit(sf::RenderWindow &window, TextureManager &texture_
 	window.setPosition(windowPosition);
 	window.setKeyRepeatEnabled(false);
 
-	int x, y, w, h;
+	int x, y, w, h, x2;
 	if (tiles_nb - 2 <= 13)
 	{
 		x = win_size.x * 0.9;
+		x2 = win_size.x * 0.6;
 		y = win_size.y * 0.9;
 	}
 	else if (tiles_nb - 2 <= 17)
 	{
 		x = win_size.x * 0.93;
+		x2 = win_size.x * 0.57;
 		y = win_size.y * 0.93;
 	}
 	else
 	{
 		x = win_size.x * 0.95;
+		x2 = win_size.x * 0.55;
 		y = win_size.y * 0.95;
 	}
 	w = 120;
@@ -66,10 +69,8 @@ void	AIGameScreen::visualInit(sf::RenderWindow &window, TextureManager &texture_
 						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
 						sf::Color(100, 100, 100), sf::Color::White);
 
-	x -= 240;
-
 	this->step_button = RoundButton("Next step", 20, sf::Color::White,
-						{x, y}, {w, h}, 10, sf::Color(200, 200, 200),
+						{x2, y}, {w, h}, 10, sf::Color(200, 200, 200),
 						sf::Color(100, 100, 100), sf::Color::White);
 }
 
@@ -142,29 +143,27 @@ void	AIGameScreen::drawGrid(sf::RenderWindow &window, TextureManager &texture_ma
 }
 
 
-void	AIGameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_manager,
-								s_player &player, std::vector<s_apple> &apples)
+void AIGameScreen::drawElements(sf::RenderWindow &window, TextureManager &texture_manager, s_player &player,
+								std::vector<s_apple> &apples)
 {
-	sf::Vector2f	visual_pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
-	const float		angle[] = {0, 180, -90, 90};
+	sf::Vector2f visual_pos(this->grid_pos.x + 16, this->grid_pos.y + 16);
+	const float	 angle[] = {0, 180, -90, 90};
 
 	// Draw player head
 	visual_pos.x += player.head_pos.x * TILE_SIZE;
 	visual_pos.y += player.head_pos.y * TILE_SIZE;
-	texture_manager.rotateDraw(window, SPRITE_SNAKE_HEAD, visual_pos,
-								sf::degrees(angle[player.dir]));
+	texture_manager.rotateDraw(window, SPRITE_SNAKE_HEAD, visual_pos, sf::degrees(angle[player.dir]));
 
 	// Draw player body parts
 	for (int i = 0; i < player.body_parts.size(); i++)
 	{
-		s_body		&actual = player.body_parts[i];
-		player_dir	dir = actual.dir;
+		s_body	  &actual = player.body_parts[i];
+		player_dir dir = actual.dir;
 
 		visual_pos.x = this->grid_pos.x + 16 + actual.pos.x * TILE_SIZE;
 		visual_pos.y = this->grid_pos.y + 16 + actual.pos.y * TILE_SIZE;
 		if (i == player.body_parts.size() - 1)
-			texture_manager.rotateDraw(window, SPRITE_SNAKE_TAIL, visual_pos,
-							sf::degrees(angle[dir]));
+			texture_manager.rotateDraw(window, SPRITE_SNAKE_TAIL, visual_pos, sf::degrees(angle[dir]));
 		else
 		{
 			sf::Vector2i next_pos = player.body_parts[i + 1].pos;
@@ -175,17 +174,15 @@ void	AIGameScreen::drawElements(sf::RenderWindow &window, TextureManager &textur
 			if (this->isAngle(actual.pos, prev_pos, next_pos))
 			{
 				dir = this->getAngleDir(actual.pos, prev_pos, next_pos);
-				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY_ANGLE, visual_pos,
-								sf::degrees(angle[dir]));
+				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY_ANGLE, visual_pos, sf::degrees(angle[dir]));
 			}
 			else
-				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY, visual_pos,
-								sf::degrees(angle[dir]));
+				texture_manager.rotateDraw(window, SPRITE_SNAKE_BODY, visual_pos, sf::degrees(angle[dir]));
 		}
 	}
 
 	// Draw apples
-	for (auto [bonus, pos] : apples)
+	for (auto [bonus, pos]: apples)
 	{
 		visual_pos.x = this->grid_pos.x + 16 + pos.x * TILE_SIZE;
 		visual_pos.y = this->grid_pos.y + 16 + pos.y * TILE_SIZE;
@@ -195,15 +192,13 @@ void	AIGameScreen::drawElements(sf::RenderWindow &window, TextureManager &textur
 			texture_manager.drawTexture(window, SPRITE_RED_APPLE, visual_pos);
 	}
 }
-
-
-void	AIGameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
-								gameInfos &infos, float &move_time,
+void AIGameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text, gameInfos &infos, float &move_time,
 								visualModAiStep &ai_step)
 {
-	float			y_mult, y_init;
-	sf::Vector2f	pos;
-	std::string		all_str[] = {"Time per move:", std::to_string(move_time),
+	int							i;
+	float						y_mult, y_init, x_sec, text_size;
+	sf::Vector2f				pos;
+	std::vector<std::string>	all_str = {"Time per move:", std::to_string(move_time),
 							"Last reward:", std::to_string(infos.last_reward),
 							"Nb steps:", std::to_string(ai_step.step_count),
 							"Max steps:", std::to_string(ai_step.max_step),
@@ -215,23 +210,30 @@ void	AIGameScreen::displayInfos(sf::RenderWindow &window, sf::Text &text,
 							"Max red apples:", std::to_string(ai_step.max_malus),
 							"Session:", std::to_string(ai_step.session_count), "/", std::to_string(ai_step.total_sessions)};
 
-	//TODO : display
-	pos.x = window.getSize().x * 3 / 4;
-	pos.y = window.getSize().y * 0.5;
-	drawText(window, text, "TODO", pos, 30,
-					sf::Text::Bold, sf::Color::White);
+	y_init = window.getSize().y;
+	y_mult = 0.05;
+	pos.x = window.getSize().x * 0.675;
+	x_sec = window.getSize().x * 0.875;
+	text_size = window.getSize().y * 0.05;
+	i = 0;
 
-	// pos.x = window.getSize().x * 3 / 4;
-	// y_init = window.getSize().y;
-	// y_mult = 0.1;
-	//
-	// for (std::string str : all_str)
-	// {
-	// 	pos.y = y_init * y_mult;
-	// 	drawText(window, text, str, pos, y_init * 0.05,
-	// 			sf::Text::Bold, sf::Color::White);
-	// 	y_mult += 0.1;
-	// }
+	while (i < all_str.size() - 4)
+	{
+		pos.y = y_init * y_mult;
+		drawText(window, text, all_str[i], pos, text_size,
+						sf::Text::Bold, sf::Color::White);
+		drawText(window, text, all_str[i + 1], {x_sec, pos.y},
+					text_size, sf::Text::Bold, sf::Color::White);
+		y_mult += 0.075;
+		i += 2;
+	}
+	pos.y = y_init * y_mult;
+	drawText(window, text, all_str[i], pos, text_size, sf::Text::Bold, sf::Color::White);
+	pos.x = window.getSize().x * 0.83;
+	drawText(window, text, all_str[i + 1], pos, text_size, sf::Text::Bold, sf::Color::White);
+	drawText(window, text, all_str[i + 2], {x_sec, pos.y}, text_size, sf::Text::Bold, sf::Color::White);
+	pos.x = window.getSize().x * 0.915;
+	drawText(window, text, all_str[i + 3], pos, text_size, sf::Text::Bold, sf::Color::White);
 }
 
 

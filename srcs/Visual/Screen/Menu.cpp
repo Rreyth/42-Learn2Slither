@@ -11,7 +11,7 @@ Menu::Menu(const flags &launch_flags)
 					launch_flags.stepmode,
 					false,
 					false,
-					0.5};
+					0};
 }
 
 

@@ -11,9 +11,10 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 
 	this->running = true;
 	this->move = false;
+	this->next_step = false;
+	this->ai_playing = false;
 	this->ai_play = !launch_flags.visual;
 	this->ai_move_time = 0;
-	this->next_step = false;
 
 	if (launch_flags.load)
 	{
@@ -86,26 +87,29 @@ void Environment::tick()
 	{
 		this->visual->tick(*this, this->input_manager.getMouse());
 	}
-	// if (this->ai_play && this->visual && this->next_step) //TODO : SIGSEGV
-	// {
-	//	this->next_step = false;
-	// 	State state = this->grid.getAgentState();
-	// 	this->ai_agent.visualPlay(*this, state);
-	//
-	// 	visualModAiStep ai_step = this->ai_agent.getVisualStep();
-	//
-	// 	if (ai_step.step.done)
-	// 	{
-	// 		this->ai_agent.visualStepEnd();
-	// 		this->reset();
-	// 	}
-	//
-	// 	if (ai_step.session_count == this->env_flags.sessions) //End of training / play
-	// 	{
-	// 		this->visual->setState(AI_GAMEOVER);
-	// 		this->ai_play = false;
-	// 	}
-	// }
+	if (this->ai_play && this->visual && this->next_step && !this->ai_playing)
+	{
+		this->ai_playing = true;
+		this->next_step = false;
+	 	State state = this->grid.getAgentState();
+
+	 	this->ai_agent.visualPlay(*this, state);
+
+	 	visualModAiStep ai_step = this->ai_agent.getVisualStep();
+
+	 	if (ai_step.step.done)
+	 	{
+	 		this->ai_agent.visualStepEnd();
+	 		this->reset();
+	 	}
+
+	 	if (ai_step.session_count == this->env_flags.sessions) //End of training / play
+	 	{
+	 		this->visual->setState(AI_GAMEOVER);
+	 		this->ai_play = false;
+	 	}
+		this->ai_playing = false;
+	}
 }
 
 
@@ -218,6 +222,9 @@ void Environment::close()
 State Environment::reset()
 {
 	this->running = true;
+	this->move = false;
+	this->next_step = false;
+	this->ai_playing = false;
 	this->grid.reset();
 	this->infos = gameInfos();
 
@@ -243,14 +250,6 @@ void	Environment::startGame(s_settings settings)
 	this->ai_agent.setSessions(settings.sessions);
 	this->ai_agent.resetVisualStep();
 	std::srand(std::time(nullptr));
-
-	// if (this->ai_play)
-	// {
-	// 	this->ai_agent.play(*this);
-	// 	// TODO : GAME OVER SCREEN FOR AI
-	// 	this->visual->setState(GAMEOVER);
-	// 	this->visual->gameOverInit(this->infos);
-	// }
 }
 
 
