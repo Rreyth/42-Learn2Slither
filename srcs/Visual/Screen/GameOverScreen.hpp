@@ -11,8 +11,7 @@ class GameOverScreen
 		GameOverScreen();
 		~GameOverScreen();
 
-		void	init(gameInfos &infos, sf::RenderWindow &window,
-					TextureManager &texture_manager);
+		void	init(gameInfos &infos, sf::RenderWindow &window);
 		void	tick(Mouse &mouse);
 		void	render(sf::RenderWindow &window, sf::Text &text,
 					TextureManager &texture_manager);

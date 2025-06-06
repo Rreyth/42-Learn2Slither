@@ -5,6 +5,7 @@
 #include <Environment/Grid.hpp>
 #include <SFML/Graphics.hpp>
 #include <Visual/Screen/GameOverScreen.hpp>
+#include <Visual/Screen/AIGameOverScreen.hpp>
 #include <Visual/Screen/GameScreen.hpp>
 #include <Visual/Screen/AIGameScreen.hpp>
 #include <Visual/Screen/Menu.hpp>
@@ -30,6 +31,7 @@ class Visual
 									gameInfos &infos, float &move_time, visualModAiStep &ai_step);
 		void				tick(Environment &env, Mouse &mouse);
 		void				gameOverInit(gameInfos &infos);
+		void				aiGameOverInit();
 
 	private:
 		sf::RenderWindow	window;
@@ -40,6 +42,7 @@ class Visual
 		GameScreen			game_screen;
 		AIGameScreen		ai_game_screen;
 		GameOverScreen		game_over_screen;
+		AIGameOverScreen	ai_game_over_screen;
 		gameState			state;
 
 		void				resetWindow();

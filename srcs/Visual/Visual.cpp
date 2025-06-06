@@ -77,7 +77,8 @@ void	Visual::render(s_player &player, std::vector<s_apple> &apples,
 		case GAMEOVER:
 			this->game_over_screen.render(this->window, this->text, this->texture_manager);
 			break;
-		case AI_GAMEOVER: // TODO
+		case AI_GAMEOVER:
+			this->ai_game_over_screen.render(this->window, this->text, this->texture_manager, ai_step);
 			break;
 	}
 
@@ -146,18 +147,31 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 				env.close();
 			break;
 		case AI_GAMEOVER:
+			this->ai_game_over_screen.tick(mouse);
+			if (this->ai_game_over_screen.backToMenu())
+			{
+				this->state = MENU;
+				this->menu.getSettings().start = false;
+				this->resetWindow();
+				env.changeWin();
+			}
+			else if (this->ai_game_over_screen.getQuit())
+				env.close();
 			break;
-		//TODO: add ai GAMEOVER
 	}
 }
 
 
 void	Visual::gameOverInit(gameInfos &infos)
 {
-	this->game_over_screen.init(infos, this->window, this->texture_manager);
+	this->game_over_screen.init(infos, this->window);
 }
 
 
+void	Visual::aiGameOverInit()
+{
+	this->ai_game_over_screen.init(this->window);
+}
 
 
 void	Visual::resetWindow()

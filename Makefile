@@ -28,6 +28,7 @@ SRCS				:=	srcs/main.cpp \
 						srcs/Visual/Screen/GameScreen.cpp \
 						srcs/Visual/Screen/AIGameScreen.cpp \
 						srcs/Visual/Screen/GameOverScreen.cpp\
+						srcs/Visual/Screen/AIGameOverScreen.cpp\
 						\
 						srcs/Visual/Screen/UI/Slider.cpp\
 						srcs/Visual/Screen/UI/Button.cpp\
@@ -103,8 +104,10 @@ re :
 	@make
 
 run: $(NAME)
-	@./$(NAME)
+	@./$(NAME) -v
 
-.PHONY : $(NAME) all clean fclean re run
+rerun: re run
+
+.PHONY : $(NAME) all clean fclean re run rerun
 
 -include $(DEPS)

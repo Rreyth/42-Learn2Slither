@@ -63,7 +63,7 @@ void Environment::run()
 			}
 		}
 		this->tick();
-		this->render(); //TODO: ADAPT FOR AI
+		this->render();
 	}
 }
 
@@ -105,15 +105,16 @@ void Environment::tick()
 
 	 	if (ai_step.session_count == this->env_flags.sessions) //End of training / play
 	 	{
-	 		this->visual->setState(AI_GAMEOVER);
-	 		this->ai_play = false;
-	 	}
+			this->visual->setState(AI_GAMEOVER);
+			this->visual->aiGameOverInit();
+			this->ai_play = false;
+		}
 		this->ai_playing = false;
 	}
 }
 
 
-void Environment::render() //TODO: HERE
+void Environment::render()
 {
 	if (this->visual)
 		this->visual->render(this->grid.getPlayer(), this->grid.getApples(),
@@ -140,8 +141,6 @@ int Environment::checkMove()
 			this->visual->setState(GAMEOVER);
 			this->visual->gameOverInit(this->infos);
 		}
-		// else
-		// 	this->reset();
 	}
 	else if (this->grid.occupiedByApples(pos))
 	{
@@ -165,8 +164,6 @@ int Environment::checkMove()
 				this->visual->setState(GAMEOVER);
 				this->visual->gameOverInit(this->infos);
 			}
-			// else
-			// 	this->reset();
 			return DEATH_REWARD;
 		}
 		this->infos.current_size = current_len;
