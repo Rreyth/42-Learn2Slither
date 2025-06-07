@@ -229,7 +229,6 @@ State Environment::reset()
 
 void	Environment::startGame(s_settings settings)
 {
-	// TODO : add choice -> new ai or same ai
 	this->reset();
 	this->input_manager.resetMouse();
 	this->grid.start(settings.size);

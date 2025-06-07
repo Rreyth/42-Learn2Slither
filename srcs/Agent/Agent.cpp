@@ -14,7 +14,7 @@ Agent::Agent(int sessions, bool learn) : visualStep()
 	this->sessions = sessions;
 	this->learn = learn;
 	this->loaded = false;
-	this->epsilon = 1.0;
+	this->epsilon = START_EPSILON;
 	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
 	this->visualStep.total_sessions = this->sessions;
 }
@@ -108,7 +108,7 @@ void	Agent::setLearn(bool learn)
 	if (!learn)
 		this->epsilon = 0.05;
 	else
-		this->epsilon = (this->loaded) ? 0.1 : 1.0;
+		this->epsilon = (this->loaded) ? 0.1 : START_EPSILON;
 }
 
 
@@ -132,7 +132,7 @@ void	Agent::play(Environment &env, bool step_mode)
 	max_len = 0;
 	max_bonus = 0;
 	max_malus = 0;
-	decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
+	decay = std::pow(MIN_EPSILON / START_EPSILON, 1 / static_cast<double>(this->sessions));
 
 	if (this->learn)
 		std::cout << "Starting training for " << this->sessions << " sessions" << std::endl;
@@ -257,7 +257,7 @@ player_dir Agent::choseAction(const State &state)
 
 	if (!this->Q.contains(state)) // state not in Q table
 	{
-		this->Q[state] = std::vector<double>(4, 0.0);
+		this->Q[state] = std::vector<double>(4, 10.0);
 		action = static_cast<player_dir>(std::rand() % 4);
 	}
 	else if (randomVal < this->epsilon) // exploration
@@ -288,7 +288,7 @@ visualModAiStep &Agent::getVisualStep()
 void	Agent::resetVisualStep()
 {
 	this->visualStep = visualModAiStep();
-	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
+	this->visualStep.decay = std::pow(MIN_EPSILON / START_EPSILON, 1 / static_cast<double>(this->sessions));
 	this->visualStep.total_sessions = this->sessions;
 }
 

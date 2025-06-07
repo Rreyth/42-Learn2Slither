@@ -7,14 +7,15 @@
 
 # include <utils/structs.hpp>
 
-# define ALPHA 0.9
-# define GAMMA 0.95
-# define MIN_EPSILON 0.01
-# define BONUS_REWARD 30
+# define ALPHA 0.6
+# define GAMMA 0.85
+# define MIN_EPSILON 0.001
+# define START_EPSILON 0.9
+# define BONUS_REWARD 50
 # define MALUS_REWARD -30
 # define DEATH_REWARD -100
 # define MOVE_REWARD -1
-# define MOVE_CLOSER_REWARD 1
+# define MOVE_CLOSER_REWARD 5
 
 class Environment;
 
