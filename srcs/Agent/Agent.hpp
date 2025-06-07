@@ -31,7 +31,7 @@ class Agent
 		void			setSessions(int sessions);
 		void			setLearn(bool learn);
 
-		void			play(Environment &env, bool step_mode);
+		void			play(Environment &env, bool step_mode, bool info);
 		void			visualPlay(Environment &env, State &state);
 		void			visualStepEnd();
 

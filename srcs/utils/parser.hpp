@@ -7,6 +7,7 @@ struct flags
 {
 	bool		invalid = false;
 	bool		help = false;
+	bool		info = false;
 	bool		visual = false;
 	bool		save  = false;
 	bool		load  = false;

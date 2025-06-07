@@ -12,6 +12,7 @@ flags parse_flags(int argc, char **argv)
 
 	static struct option long_options[] = {
 		{"help", no_argument, 0, 'h'},
+		{"info", no_argument, 0, 'i'},
 		{"visual", no_argument, 0, 'v'},
 		{"save", required_argument, 0, 's'},
 		{"load", required_argument, 0, 'l'},
@@ -22,11 +23,12 @@ flags parse_flags(int argc, char **argv)
 		{0, 0, 0, 0}
 	};
 
-	help = "usage: ./snake [-h/--help] [-v/--visual] [-s/--save {filename}] "
+	help = "usage: ./snake [-h/--help] [-i/--info] [-v/--visual] [-s/--save {filename}] "
 		"[-l/--load {filename}] [--dontlearn] [--stepmode] "
 		"[-n/--size {10 <= int <= 25}] [--sessions {int > 0}]]"
 		"\n\noptions:\n"
 		"  -h, --help\t\tShow this help message\n"
+		"  -i, --info\t\tShow AI vision and infos for each step\n"
 		"  -v, --visual\t\tTurn on visual output\n"
 		"  -s, --save {file}\tSave Q table to file\n"
 		"  -l, --load {file}\tLoad Q table from file\n"
@@ -35,13 +37,16 @@ flags parse_flags(int argc, char **argv)
 		"  -n, --size {int}\tSize of the game grid between 10 and 25\n"
 		"  --sessions\t\tNumber of sessions Agent will run\n";
 
-	while ((opt = getopt_long(argc, argv, "hvs:l:n:r:", long_options, &option_index)) != -1)
+	while ((opt = getopt_long(argc, argv, "hivs:l:n:r:", long_options, &option_index)) != -1)
 	{
 		switch (opt)
 		{
 			case 'h':
 				std::cout << help << std::endl;
 				parsed_flags.help = true;
+				break;
+			case 'i':
+				parsed_flags.info = true;
 				break;
 			case 'v':
 				parsed_flags.visual = true;

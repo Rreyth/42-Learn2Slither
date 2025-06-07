@@ -15,6 +15,7 @@ class Grid
 
 		void					movePlayer(const player_dir &dir);
 		State					getAgentState();
+		void					printAgentView();
 		s_player&				getPlayer();
 		s_apple&				getAppleByPos(const sf::Vector2i &pos);
 		std::vector<s_apple>&	getApples();

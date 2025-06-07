@@ -118,7 +118,7 @@ void	Agent::setSessions(int sessions)
 }
 
 
-void	Agent::play(Environment &env, bool step_mode)
+void	Agent::play(Environment &env, bool step_mode, bool info)
 {
 	State				state;
 	learnStep			learn_step;
@@ -152,7 +152,7 @@ void	Agent::play(Environment &env, bool step_mode)
 			action = this->choseAction(state);
 
 			env.step(action, learn_step);
-			if (step_mode)
+			if (step_mode || info)
 				printStepInfos(i + 1, step_counter + 1, action, learn_step);
 
 			if (learn_step.reward == BONUS_REWARD)
@@ -185,7 +185,7 @@ void	Agent::play(Environment &env, bool step_mode)
 		if (bonus_counter > max_bonus)
 			max_bonus = bonus_counter;
 
-		if (step_mode)
+		if (step_mode || info)
 			printSessionInfos(i + 1, this->sessions, step_counter, curr_len, bonus_counter, malus_counter);
 
 	}

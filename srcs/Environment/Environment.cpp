@@ -28,7 +28,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 
 	if (this->ai_play)
 	{ // no visual, only AI running
-		this->ai_agent.play(*this, launch_flags.stepmode);
+		this->ai_agent.play(*this, launch_flags.stepmode, launch_flags.info);
 		this->close();
 	}
 }
@@ -257,6 +257,16 @@ void	Environment::step(const player_dir &action, learnStep &learn_step)
 {
 	if (this->env_flags.stepmode && !this->visual)
 		waitForUser();
+
+	if (this->env_flags.info)
+	{
+		this->grid.printAgentView();
+		if (this->visual)
+		{
+			std::string	dirs[] = {"up", "down", "left", "right"};
+			std::cout << "Agent choice : " << dirs[action] << std::endl << std::endl;
+		}
+	}
 
 	this->grid.movePlayer(action);
 	this->move = true;

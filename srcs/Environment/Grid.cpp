@@ -223,6 +223,58 @@ State	Grid::getAgentState()
 }
 
 
+void	Grid::printAgentView()
+{
+	const sf::Vector2i	head_pos = this->player.head_pos;
+	sf::Vector2i	pos = head_pos;
+	char			view;
+	for (int y = 0; y < this->size; y++)
+	{
+		pos.y = y;
+		if (pos.y == head_pos.y)
+		{
+			for (int x = 0; x < this->size; x++)
+			{
+				pos.x = x;
+				if (x == 0 || x == this->size - 1)
+					view = 'W';
+				else if (this->occupiedByApples(pos))
+				{
+					if (this->occupiedByMalus(pos))
+						view = 'R';
+					else
+						view = 'G';
+				}
+				else if (this->occupiedByBody(pos))
+					view = 'S';
+				else if (pos == head_pos)
+					view = 'H';
+				else
+					view = '0';
+				std::cout << view;
+			}
+			std::cout << std::endl;
+			continue;
+		}
+		if (y == 0 || y == this->size - 1)
+			view = 'W';
+		else if (this->occupiedByApples(pos))
+		{
+			if (this->occupiedByMalus(pos))
+				view = 'R';
+			else
+				view = 'G';
+		}
+		else if (this->occupiedByBody(pos))
+			view = 'S';
+		else
+			view = '0';
+
+		std::cout << std::string(head_pos.x, ' ') << view << std::endl;
+	}
+}
+
+
 s_player&	Grid::getPlayer()
 {
 	return (this->player);
