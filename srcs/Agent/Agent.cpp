@@ -118,7 +118,7 @@ void	Agent::setSessions(int sessions)
 }
 
 
-void	Agent::play(Environment &env)
+void	Agent::play(Environment &env, bool step_mode)
 {
 	State				state;
 	learnStep			learn_step;
@@ -133,7 +133,6 @@ void	Agent::play(Environment &env)
 	max_bonus = 0;
 	max_malus = 0;
 	decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
-	// std::srand(std::time(nullptr));
 
 	if (this->learn)
 		std::cout << "Starting training for " << this->sessions << " sessions" << std::endl;
@@ -153,6 +152,8 @@ void	Agent::play(Environment &env)
 			action = this->choseAction(state);
 
 			env.step(action, learn_step);
+			if (step_mode)
+				printStepInfos(i + 1, step_counter + 1, action, learn_step);
 
 			if (learn_step.reward == BONUS_REWARD)
 				bonus_counter++;
@@ -170,13 +171,11 @@ void	Agent::play(Environment &env)
 
 			if (this->learn)
 				this->Q[state][action] = (1 - ALPHA) * old_value + ALPHA * (learn_step.reward + GAMMA * next_max);
-			if (learn_step.done)
-				break;
-			state = learn_step.next_state;
 			step_counter++;
 			curr_len = env.getGrid().getPlayerLen();
 			if (curr_len > max_len)
 				max_len = curr_len;
+			state = learn_step.next_state;
 		}
 		this->epsilon = std::max(MIN_EPSILON, this->epsilon * decay);
 		if (step_counter > max_step)
@@ -186,11 +185,9 @@ void	Agent::play(Environment &env)
 		if (bonus_counter > max_bonus)
 			max_bonus = bonus_counter;
 
-		// std::cout << "Session " << i + 1 << " / " << this->sessions << ":" << std::endl
-		// << "life time (in steps):\t" << step_counter << std::endl
-		// << "final length:\t\t" << curr_len << std::endl
-		// << "green apples eaten:\t" << bonus_counter << std::endl
-		// << "red apples eaten:\t" << malus_counter << std::endl << std::endl;
+		if (step_mode)
+			printSessionInfos(i + 1, this->sessions, step_counter, curr_len, bonus_counter, malus_counter);
+
 	}
 	std::cout << "End of sessions:" << std::endl;
 	if (this->learn)

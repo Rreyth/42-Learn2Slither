@@ -1,5 +1,6 @@
 #include <utils/functions.hpp>
 #include <cmath>
+#include <iostream>
 
 void	drawText(sf::RenderWindow &window, sf::Text &text, std::string str,
 					int x, int y, int fontSize, sf::Text::Style style, sf::Color color)
@@ -55,6 +56,7 @@ std::string	formatFloat(float x)
 	return s;
 }
 
+
 void	drawBackground(sf::RenderWindow &window, TextureManager &texture_manager)
 {
 	sf::Vector2f win_size(window.getSize());
@@ -91,4 +93,37 @@ void	drawBackground(sf::RenderWindow &window, TextureManager &texture_manager)
 				texture_manager.drawTexture(window, SPRITE_SNAKE_BODY, sf::Vector2f(win_size.x / 2, y));
 		}
 	}
+}
+
+
+void	waitForUser()
+{
+	std::cout << "Press Enter to continue..." << std::endl;
+	std::cin.get();
+}
+
+
+void	printStepInfos(const int &session_counter, const int &step_counter,
+				const player_dir &action, const learnStep &learn_step)
+{
+	std::string actions[] = {"up", "down", "left", "right"};
+
+	std::cout << "Step infos:" << std::endl
+	<< "session number: " << session_counter << std::endl
+	<< "step number: " << step_counter << std::endl
+	<< "action: " << actions[action] << std::endl
+	<< "reward: " << learn_step.reward << std::endl << std::endl;
+}
+
+
+void	printSessionInfos(const int &session_counter, const int &session_total, const int &step_counter,
+				const int &len, const int &bonus_counter, const int &malus_counter)
+{
+	std::string actions[] = {"up", "down", "left", "right"};
+
+	std::cout << "End of session " << session_counter << " / " << session_total << std::endl
+	<< "life time (steps): " << step_counter << std::endl
+	<< "final length: " << len << std::endl
+	<< "green apples eaten:\t" << bonus_counter << std::endl
+	<< "red apples eaten:\t" << malus_counter << std::endl << std::endl;
 }

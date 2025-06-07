@@ -1,6 +1,4 @@
 #include <Environment/Environment.hpp>
-// #include <cmath>
-// #include <iostream>
 
 Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agent(launch_flags.sessions, !launch_flags.dontlearn)
 {
@@ -30,7 +28,7 @@ Environment::Environment(flags &launch_flags) : grid(launch_flags.size), ai_agen
 
 	if (this->ai_play)
 	{ // no visual, only AI running
-		this->ai_agent.play(*this);
+		this->ai_agent.play(*this, launch_flags.stepmode);
 		this->close();
 	}
 }
@@ -258,7 +256,8 @@ void	Environment::changeWin()
 
 void	Environment::step(const player_dir &action, learnStep &learn_step)
 {
-	//TODO: step-by-step mod needs input
+	if (this->env_flags.stepmode && !this->visual)
+		waitForUser();
 
 	this->grid.movePlayer(action);
 	this->move = true;

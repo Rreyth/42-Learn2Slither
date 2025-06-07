@@ -16,8 +16,6 @@ void	InputManager::manageKeyboard(Environment &env, const std::optional<sf::Even
 {
 	if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
 	{
-		// if (keyPressed->code == sf::Keyboard::Key::Escape)
-		// 	env.close();
 		if (!env.getAiPlay())
 		{
 			if (!env.hasMoved())
