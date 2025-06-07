@@ -34,7 +34,7 @@
 ```bash
 # Clone the repository
 git clone https://github.com/Rreyth/42-Learn2Slither.git
-cd Learn2Slither
+cd 42-Learn2Slither
 
 # Build
 make
