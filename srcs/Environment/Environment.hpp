@@ -22,6 +22,7 @@ class Environment
 		State	reset();
 		Grid	&getGrid();
 		bool	getAiPlay() const;
+		void	setAiPlay(bool ai_play);
 		void	startGame(s_settings settings);
 		void	changeWin();
 		void	step(const player_dir &action, learnStep &learn_step);

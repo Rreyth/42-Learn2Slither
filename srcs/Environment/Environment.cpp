@@ -200,6 +200,12 @@ bool	Environment::getAiPlay() const
 }
 
 
+void	Environment::setAiPlay(bool ai_play)
+{
+	this->ai_play = ai_play;
+}
+
+
 void Environment::close()
 {
 	if (this->visual)

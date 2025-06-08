@@ -130,6 +130,7 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 				this->menu.getSettings().AI_play = false;
 				this->resetWindow();
 				env.changeWin();
+				env.setAiPlay(false);
 			}
 			else if (this->ai_game_screen.isNextStep())
 				env.setNextStep(true);
@@ -154,6 +155,7 @@ void	Visual::tick(Environment &env, Mouse &mouse)
 				this->menu.getSettings().start = false;
 				this->resetWindow();
 				env.changeWin();
+				env.setAiPlay(false);
 			}
 			else if (this->ai_game_over_screen.getQuit())
 				env.close();
