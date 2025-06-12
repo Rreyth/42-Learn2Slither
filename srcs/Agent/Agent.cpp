@@ -15,7 +15,7 @@ Agent::Agent(int sessions, bool learn) : visualStep()
 	this->learn = learn;
 	this->loaded = false;
 	this->epsilon = START_EPSILON;
-	this->visualStep.decay = std::pow(0.007 / 1, 1 / static_cast<double>(this->sessions));
+	this->visualStep.decay = std::pow(MIN_EPSILON / START_EPSILON, 1 / static_cast<double>(this->sessions));
 	this->visualStep.total_sessions = this->sessions;
 }
 
@@ -65,7 +65,7 @@ void	Agent::loadQTable(std::string &filename)
 	}
 	file.close();
 	this->loaded = true;
-	this->epsilon = (this->learn) ? 0.1 : 0.05;
+	this->epsilon = (this->learn) ? 0.1 : MIN_EPSILON;
 }
 
 
@@ -106,7 +106,7 @@ void	Agent::setLearn(bool learn)
 {
 	this->learn = learn;
 	if (!learn)
-		this->epsilon = 0.05;
+		this->epsilon = MIN_EPSILON;
 	else
 		this->epsilon = (this->loaded) ? 0.1 : START_EPSILON;
 }
